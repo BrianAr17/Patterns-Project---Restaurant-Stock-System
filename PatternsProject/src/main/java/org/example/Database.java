@@ -43,7 +43,7 @@ public class Database {
         String sql = " create table if not exists PerishableFoods (\n" // modify columns
                 + " foodId integer primary key, \n"
                 + " foodName text not null, \n"
-                + " Quantitu integer not null,\n"
+                + " Quantity integer not null,\n"
                 + " Food_Desc text not null,\n"
                 + " Price/Lbs double not null,\n"
                 + " Supplier text not null,\n"
@@ -60,13 +60,12 @@ public class Database {
     // create Kitchen tools table
     public static void createKitchenToolsTable() {
         String sql = " create table if not exists KitchenTools (\n"
-                + " id integer primary key, \n"
-                + " name text not null, \n"
-                + " empPassword text not null,\n"
-                + " age integer check (age >= 14),\n"
-                + " Position text not null,\n"
-                + " empEmail text not null,\n"
-                + " empPhoneNumber text not null\n"
+                + " toolID integer primary key, \n"
+                + " toolType text not null, \n"
+                + " toolBrand text not null,\n"
+                + " toolDesc text not null,\n"
+                + " quantity integer not null check ( quantity > 0),\n"
+                + " costPerUnit integer not null check(costPerUnit > 0),\n"
                 + ");";
         try(Connection conn = connect();
             Statement stmt = conn.createStatement()) {
@@ -80,7 +79,7 @@ public class Database {
     // create Order Records table
     public static void createOrderRecordsTable() {
         String sql = " create table if not exists OrderRecords (\n"
-                + " id integer primary key, \n"
+                + " orderID integer primary key, \n"
                 + " ProductName text not null, \n"
                 + " ProductDesc text not null,\n"
                 + " Order_Date Date check (Order_Date <= DATE('now')),\n"
@@ -95,6 +94,28 @@ public class Database {
             System.out.println(e.getMessage());
         }
     }
+
+    // create Deliverer table
+    public static void createDelivererTable() {
+        String sql = " create table if not exists Deliverer (\n"
+                + " delivererID integer primary key, \n"
+                + " ProductName text not null, \n"
+                + " ProductDesc text not null,\n"
+                + " Order_Date Date check (Order_Date <= DATE('now')),\n"
+                + " Arrival_Date Date not null check(Arrival_Date > Order_Date),\n"
+                + " OrderStatus text not null  check( OrderStatus = PENDING OR OrderStatus = RECEIVED OR Order_Status = DELIVERED)\n"
+                + ");";
+        try(Connection conn = connect();
+            Statement stmt = conn.createStatement()) {
+            stmt.execute(sql);
+            System.out.println(" Order Records table created successfully");
+        } catch (SQLException e) {
+            System.out.println(e.getMessage());
+        }
+    }
+
+
+
     public static void main(String[] args) {
 
 
