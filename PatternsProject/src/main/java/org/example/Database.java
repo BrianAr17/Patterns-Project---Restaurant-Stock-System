@@ -19,7 +19,7 @@ public class Database {
     }
 
     // create Students table
-    public static void createStudentTable() {
+    public static void createEmployeeTable() {
         String sql = " create table if not exists Employees (\n"
                 + " id integer primary key, \n"
                 + " name text not null, \n"
