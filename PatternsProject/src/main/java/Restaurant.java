@@ -10,8 +10,8 @@ public class Restaurant {
     private String zipcode;
     private String phoneNumber;
     private String email;
-    protected static ArrayList<Order> ordersSent;
-    protected static ArrayList<Order> deliveriesShipped;
+    protected static ArrayList<Order> ordersSent = new ArrayList<>();
+    protected static ArrayList<Order> deliveriesShipped = new ArrayList<>();
 
     public String getName() {
         return name;
@@ -78,8 +78,11 @@ public class Restaurant {
         });
     }
 
-    public void sendOrder(Order order) {
+    public void sendOrder(Order order, SupplyCompany company) {
+
         ordersSent.add(order);
+        company.ordersReceived.add(order);
+
     }
 
     public String receiveOrderStatus(Order order) {
