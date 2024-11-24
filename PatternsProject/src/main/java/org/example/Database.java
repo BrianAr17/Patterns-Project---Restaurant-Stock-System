@@ -1,9 +1,6 @@
 package org.example;
 
-import java.sql.Connection;
-import java.sql.DriverManager;
-import java.sql.SQLException;
-import java.sql.Statement;
+import java.sql.*;
 
 public class Database {
     private static Connection connect() {
@@ -18,7 +15,7 @@ public class Database {
         return conn;
     }
 
-    // create Employee table
+    // create Employee table =============================================================================
     public static void createEmployeeTable() {
         String sql = " create table if not exists Employees (\n"
                 + " id integer primary key, \n"
@@ -26,7 +23,7 @@ public class Database {
                 + " empPassword text not null,\n"
                 + " age integer check (age >= 14),\n"
                 + " Position text not null,\n"
-                + " empEmail text not null\n"
+                + " empEmail text not null,\n"
                 + " empPhoneNumber text not null\n"
                 + ");";
         try(Connection conn = connect();
@@ -38,7 +35,44 @@ public class Database {
         }
     }
 
-    // create Order table
+    public static void insertEmployees(String name, String password,int age,String position, String email,String phoneNumber) {
+        String sql = " insert into Employees (name,empPassword,age,Position,empEmail,empPhoneNumber) values (?, ?,?, ?,?, ?)";
+        try(Connection conn= connect();
+            PreparedStatement pstmt = conn.prepareStatement(sql)) {
+            pstmt.setString(1, name);
+            pstmt.setString(2, password);
+            pstmt.setInt(3, age);
+            pstmt.setString(4, position);
+            pstmt.setString(5, email);
+            pstmt.setString(6, phoneNumber);
+            pstmt.executeUpdate();
+            System.out.println("Employee data has been added successfully");
+        } catch (SQLException e) {
+            System.out.println(e.getMessage());
+        }
+    }
+
+    public static void displayEmployees() {
+        String sql = "select * from Employees";
+        try (Connection conn = connect(); Statement stmt = conn.createStatement();
+             ResultSet rs = stmt.executeQuery(sql)) {
+            System.out.println("Employees :");
+            while (rs.next()) {
+                System.out.println("Id : " + rs.getInt("id") +
+                        "\nName: " + rs.getString("name") +
+                        "\nPassword : " + rs.getInt("empPassword")+
+                        "\nAge: " + rs.getString("age") +
+                        "\nPosition: " + rs.getString("Position") +
+                        "\nEmail: " + rs.getString("empEmail") +
+                        "\nPhoneNumber: " + rs.getString("empPhoneNumber"));
+                System.out.println("\n");
+            }
+        } catch (SQLException e) {
+            System.out.println(e.getMessage());
+        }
+    }
+
+    // create Order table =============================================================================
     public static void createOrderTable() {
         String sql = " create table if not exists Order (\n" // modify columns
                 + " orderId integer primary key, \n"
@@ -74,7 +108,7 @@ public class Database {
         }
     }
 
-    // create Deliverer table
+    // create Deliverer table =============================================================================
     public static void createDelivererTable() {
         String sql = " create table if not exists Deliverer (\n"
                 + " delivererID integer primary key, \n"
@@ -89,7 +123,7 @@ public class Database {
         }
     }
 
-    // create Products Records table
+    // create Products Records table =============================================================================
     public static void createProductsTable() {
         String sql = " create table if not exists Products (\n"
                 + " productId integer primary key, \n"
@@ -107,7 +141,7 @@ public class Database {
         }
     }
 
-    // create Receipt table
+    // create Receipt table =============================================================================
     public static void createReceiptTable(){
         String sql = " create table if not exists Receipt (\n"
                 +" receiptId integer primary key, \n"
@@ -126,8 +160,33 @@ public class Database {
         }
     }
 
+    // Methods ================================================================================
 
+    public static boolean checkForEmployeeValidity(String name, String password){
+        String sql = "select 1 " +
+                "from Employees " +
+                "where name LIKE ? ANd empPassword LIKE ?";
+        try (Connection conn = connect();
+             PreparedStatement pstmt = conn.prepareStatement(sql))
 
+        {
+            pstmt.setString(1,name);
+            pstmt.setString(2,password);
+            ResultSet rs = pstmt.executeQuery();
+            if(rs.next()){
+                System.out.println("Input valid");
+                return true;
+            }
+            else{
+                System.out.println("This user does not exists");
+                return false;
+            }
+        }
+        catch(SQLException e){
+            System.out.println(e.getMessage());
+            return false;
+        }
+    }
 
 
     public static void main(String[] args) {

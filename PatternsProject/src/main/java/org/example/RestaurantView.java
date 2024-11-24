@@ -9,8 +9,8 @@ public class RestaurantView {
     public static void LoginInterface(){
         System.out.print("Welcome to Restaurant Stocking System\n\n"); //TODO give proper name to stocking system later
         System.out.printf("%23s","Login\n\n");
-        System.out.print("Employee ID: ");
-        String id = input.nextLine();
+        System.out.print("Employee Name: ");
+        String name = input.nextLine();
         System.out.print("Employee Password: ");
         String password = input.nextLine();
 
