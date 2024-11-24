@@ -107,6 +107,25 @@ public class Database {
         }
     }
 
+    // create Receipt table
+    public static void createReceiptTable(){
+        String sql = " create table if not exists Receipt (\n"
+                +" receiptId integer primary key, \n"
+                +" orderId integer not null, \n"
+                +" productId integer not null,\n"
+                +" quantity integer not null check( quantity > 0),\n"
+                +" foreign key (orderId) references Order (orderId) on delete set null,\n"
+                +" foreign key (productId) references Products (productId) on delete set null \n"
+                + ");";
+        try(Connection conn = connect();
+            Statement stmt = conn.createStatement()) {
+            stmt.execute(sql);
+            System.out.println(" Receipt table created successfully");
+        } catch (SQLException e) {
+            System.out.println(e.getMessage());
+        }
+    }
+
 
 
 
