@@ -161,7 +161,6 @@ public class Database {
     }
 
     // Methods ================================================================================
-
     public static boolean checkForEmployeeValidity(String name, String password){
         String sql = "select 1 " +
                 "from Employees " +
@@ -186,11 +185,5 @@ public class Database {
             System.out.println(e.getMessage());
             return false;
         }
-    }
-
-
-    public static void main(String[] args) {
-
-
     }
 }
