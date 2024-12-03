@@ -1,10 +1,10 @@
 public class Product {
 
     // Product fields
-    private static String description;
-    private static double unitPrice;
-    private static String productID;
-    private String unitID;
+    private static String productID = "1";
+    private static String name = Product.class.getName();
+    private static String description = "The base of all Products. The \"OG\" Product...";
+    private static double unitPrice = 0; // Price per individual
 
     public static String getDescription() {
         return description;
@@ -18,24 +18,18 @@ public class Product {
         return unitPrice;
     }
 
-    public static void setUnitPrice(double unitPrice) {
-        Product.unitPrice = unitPrice;
-    }
+    public static void setUnitPrice(double unitPrice) { Product.unitPrice = unitPrice; }
 
     public static String getProductID() {
         return productID;
     }
 
-    public static void setProductID(String productID) {
-        Product.productID = productID;
-    }
+    public static String getName() { return name; }
 
-    public String getUnitID() {
-        return unitID;
-    }
 
-    public void setUnitID(String unitID) {
-        this.unitID = unitID;
+    @Override
+    public String toString() {
+        return "[Product Name: \"" + name + "\", ID: " + productID + ", Price: $" + unitPrice + "]";
     }
 
 }

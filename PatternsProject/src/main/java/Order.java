@@ -1,6 +1,8 @@
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashMap;
+import java.util.TreeMap;
 
 public class Order {
 
@@ -9,19 +11,18 @@ public class Order {
     private String status;
     private LocalDateTime dateSent;
     private LocalDateTime dateReceived;
-    protected ArrayList<Product> products;
-    private int quantity;
+    private HashMap<Product, Integer> order;
 
-    public Order(String ID, ArrayList<Product> products) {
+    public Order(String ID, HashMap<Product, Integer> order) {
         this.ID = ID;
         this.status = "Pending";
         this.dateSent = LocalDateTime.now();
         this.dateReceived = null;
-        this.products = products;
+        this.order = order;
     }
 
     public String getStatus() {
-        return status;
+        return "Order Status: " + status + "\n";
     }
 
     public String getID() {
@@ -52,19 +53,23 @@ public class Order {
         this.dateReceived = dateReceived;
     }
 
-    public ArrayList<Product> getProducts() {
-        return products;
+    public HashMap<Product, Integer> getOrder() {
+        return order;
     }
 
-    public void setProducts(ArrayList<Product> products) {
-        this.products = products;
+    public void setOrder(HashMap<Product, Integer> order) {
+        this.order = order;
     }
 
-    public int getQuantity() {
-        return quantity;
+    @Override
+    public String toString() {
+
+        return "Order ID: " + ID
+                + "\nStatus: " + status
+                + "\nDate Sent: " + dateSent
+                + "\nProducts and quantities: " + order.toString()
+                + "\n";
+
     }
 
-    public void setQuantity(int quantity) {
-        this.quantity = quantity;
-    }
 }
