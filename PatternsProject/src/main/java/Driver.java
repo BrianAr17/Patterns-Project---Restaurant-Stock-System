@@ -84,5 +84,7 @@ public class Driver {
         System.out.println(Restaurant.deliveriesReceived.get(0).getOrder().getDateReceived());
         System.out.println(Restaurant.deliveriesReceived.get(0).getOrder().getStatus());
 
+        System.out.println();
+
     }
 }
