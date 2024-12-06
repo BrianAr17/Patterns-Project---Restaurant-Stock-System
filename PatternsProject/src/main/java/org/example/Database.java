@@ -1,8 +1,12 @@
 package org.example;
 
+import javax.xml.crypto.Data;
 import java.sql.*;
+import java.time.LocalDate;
 
 public class Database {
+
+ ;
     private static Connection connect() {
         String url = "jdbc:sqlite:Restaurant.db";
         Connection conn = null;
@@ -72,32 +76,36 @@ public class Database {
         }
     }
 
-    // create Order table =============================================================================
+//     create Order table =============================================================================
     public static void createOrderTable() {
-        String sql = " create table if not exists Order (\n" // modify columns
+        LocalDate currentDate = LocalDate.now();
+        String sql = "create table if not exists 'Order'(\n" // modify columns
                 + " orderId integer primary key, \n"
-                + " status text not null, \n" //TODO assure that the status column will have the same values of chosen ENUMS for status of deliveries
-                + " dateSent date not null check( dateSent <= dateArrived AND dateSent >= currentDate),\n" //TODO Check if there is a way within SQLite to return the machines date
-                + " dateArrived data not null check (dateArrived >= dateSent)\n"
+                + " status text not null check(status = 'Pending' OR status = 'Declined' OR status = 'Approved'), \n"
+                + " dateSent date not null check( dateSent <= dateArrived AND dateSent >= '"+currentDate+"'),\n"
+                + " dateArrived date not null check (dateArrived >= dateSent)\n"
                 + ");";
         try(Connection conn = connect();
             Statement stmt = conn.createStatement()) {
             stmt.execute(sql);
-            System.out.println("  Order table created successfully");
+            System.out.println("Order table created successfully");
         } catch (SQLException e) {
             System.out.println(e.getMessage());
         }
     }
 
+
+
     // create Delivery tools table
     public static void createDeliveryTable() {
+        LocalDate currentDate = LocalDate.now();
         String sql = " create table if not exists Delivery (\n"
-                + " DeliveryId integer primary key, \n"
+                + " deliveryId integer primary key, \n"
                 + " orderId integer not null, \n"
-                + " status text not null,\n" //TODO assure that the status column will have the same values of chosen ENUMS for status of deliveries
-                + " dateShipped date  not null check(dateShipped <= dateReceived AND dateShipped >= currentDate),\n" //TODO Check if there is a way within SQLite to return the machines date
-                + " dateReceived date not null check(dateReceived >= dateShipped AND dateShipped >= currentDate),\n"
-                + " foreign key integer (orderId) references Order (orderId) on delete set null\n"
+                + " status text not null check(status = 'Pending' OR status = 'Preparing_Order' OR status = 'Approved'),\n"
+                + " dateShipped date  not null check(dateShipped <= dateReceived AND dateShipped >= '"+currentDate+"'),\n" //TODO Check if there is a way within SQLite to return the machines date
+                + " dateReceived date not null check(dateReceived >= dateShipped AND dateShipped >=  '"+currentDate+"'),\n"
+                + " foreign key (orderId) references 'Order' (orderId) on delete set null\n"
                 + ");";
         try(Connection conn = connect();
             Statement stmt = conn.createStatement()) {
@@ -186,4 +194,17 @@ public class Database {
             return false;
         }
     }
-}
+
+        public static void main(String[] args) {
+           createOrderTable();
+           createDeliveryTable();
+        }
+    }
+
+
+
+
+
+
+
+
