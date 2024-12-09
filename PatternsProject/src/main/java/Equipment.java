@@ -10,4 +10,12 @@ public class Equipment extends Product {
     public void setWarranty(int warranty) {
         this.warranty = warranty;
     }
+
+    public static class PlaceholderProduct1 {
+
+    }
+
+    public static class PlaceholderProduct2 {
+
+    }
 }

@@ -12,4 +12,8 @@ public class Perishable extends Product {
     public void setExpiryDate(Date expiryDate) {
         this.expiryDate = expiryDate;
     }
+
+    public static class PlaceholderProduct3 extends Product {
+
+    }
 }

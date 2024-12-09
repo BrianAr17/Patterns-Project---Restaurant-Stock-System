@@ -1,8 +1,13 @@
 package org.example;
 
 import java.sql.*;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
 
 public class Database {
+
+    public static LocalDate localeDate = LocalDate.now();
+
     private static Connection connect() {
         String url = "jdbc:sqlite:Restaurant.db";
         Connection conn = null;
@@ -74,17 +79,50 @@ public class Database {
 
     // create Order table =============================================================================
     public static void createOrderTable() {
-        String sql = " create table if not exists Order (\n" // modify columns
+        String sql = " create table if not exists 'Order' (\n" // modify columns
                 + " orderId integer primary key, \n"
-                + " status text not null, \n" //TODO assure that the status column will have the same values of chosen ENUMS for status of deliveries
+                + " status text not null check (status = 'PENDING' OR status = 'CANCELLED' OR status = 'APPROVED'), \n" //TODO assure that the status column will have the same values of chosen ENUMS for status of deliveries
                 + " dateSent date not null check( dateSent <= dateArrived AND dateSent >= currentDate),\n" //TODO Check if there is a way within SQLite to return the machines date
-                + " dateArrived data not null check (dateArrived >= dateSent)\n"
+                + " dateArrived data check (dateArrived >= dateSent)\n"
                 + ");";
         try(Connection conn = connect();
             Statement stmt = conn.createStatement()) {
             stmt.execute(sql);
             System.out.println("  Order table created successfully");
         } catch (SQLException e) {
+            System.out.println(e.getMessage());
+        }
+    }
+
+    public static void placeOrderTable(String status){
+        Date current = Date.valueOf(localeDate);
+
+        String sql = "INSERT into 'Order' (status,dataSent) values (?.?)";
+        try(Connection conn = connect();
+            PreparedStatement pstmt = conn.prepareStatement(sql)){
+            pstmt.setString(1,status);
+            pstmt.setDate(2,current);
+            pstmt.executeUpdate();
+            System.out.println("Order has been registered");
+        }
+        catch(SQLException e){
+            System.out.println(e.getMessage());
+        }
+    }
+
+    public static void insertOrderTable(String status,Date dateArrived){
+        Date current = Date.valueOf(localeDate);
+
+        String sql = "INSERT into 'Order' (status,dataSent,dateArrived) values (?,?,?)";
+        try(Connection conn = connect();
+            PreparedStatement pstmt = conn.prepareStatement(sql)){
+            pstmt.setString(1,status);
+            pstmt.setDate(2,current);
+            pstmt.setDate(3,dateArrived);
+            pstmt.executeUpdate();
+            System.out.println("Order has been registered");
+        }
+        catch(SQLException e){
             System.out.println(e.getMessage());
         }
     }

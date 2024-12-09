@@ -1,6 +1,4 @@
-import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.TreeMap;
 
 public class Driver {
     public static void main(String[] args) {
@@ -85,6 +83,13 @@ public class Driver {
         System.out.println(Restaurant.deliveriesReceived.get(0).getOrder().getStatus());
 
         System.out.println();
+
+        Storage storage = new Storage();
+        storage.addProduct(new Delivery(order, "3", "Perfect", company1));
+
+    }
+
+    public static class PlaceholderProduct3 extends Product {
 
     }
 }
