@@ -3,10 +3,12 @@ package org.example;
 import javax.xml.crypto.Data;
 import java.sql.*;
 import java.time.LocalDate;
+import java.util.Calendar;
 
 public class Database {
 
- ;
+    public static LocalDate localeDate = LocalDate.now();
+
     private static Connection connect() {
         String url = "jdbc:sqlite:Restaurant.db";
         Connection conn = null;
@@ -93,6 +95,60 @@ public class Database {
             System.out.println(e.getMessage());
         }
     }
+
+    public static void insertIntoOrderTable(String status){
+        Date currentDate = Date.valueOf(localeDate);
+
+        String sql = "INSERT into 'Order' (status,dateSent) values (?,?)";
+
+        try(Connection conn = connect();
+            PreparedStatement pstmt = conn.prepareStatement(sql)){
+            pstmt.setString(1,status);
+            pstmt.setDate(2,currentDate);
+            System.out.println("Order has been sent and has arrived");
+        }
+        catch (SQLException e){
+            System.out.println(e.getMessage());
+        }
+    }
+
+    public static void fullInsertOrder(String status,Date arrivedDate){
+        Date currentDate = Date.valueOf(localeDate);
+
+        String sql = "INSERT into 'Order' (status,dateSent,dateArrived) values (?,?,?)";
+
+        try(Connection conn = connect();
+            PreparedStatement pstmt = conn.prepareStatement(sql)){
+            pstmt.setString(1,status);
+            pstmt.setDate(2,currentDate);
+            pstmt.setDate(3,arrivedDate);
+            System.out.println("Order has been sent and has arrived");
+        }
+        catch (SQLException e){
+            System.out.println(e.getMessage());
+        }
+    }
+
+    public static void viewOrderTable(){
+        String sql = "SELECT * FROM 'Order'";
+
+        try(Connection conn = connect();
+            Statement stmt = conn.createStatement();
+            ResultSet rs = stmt.executeQuery(sql)){
+            System.out.printf("%37s","Order Table");
+            System.out.println();
+            System.out.printf("%-15s %-20s %-20s %-20s"," Order Id","Order Status","Order Sent Date","Order Arrival Date \n");
+            while(rs.next()){
+                System.out.printf("%-15s %-20s %-20s %-20s",rs.getInt("order_id"),rs.getString("status"),rs.getDate("dateSent"),rs.getDate("dateArrived"));
+                System.out.println();
+            }
+            System.out.println("\n\n");
+        }
+        catch (SQLException e){
+            System.out.println(e.getMessage());
+        }
+    }
+
 
 
 
@@ -193,11 +249,14 @@ public class Database {
             System.out.println(e.getMessage());
             return false;
         }
+
     }
 
         public static void main(String[] args) {
-           createOrderTable();
-           createDeliveryTable();
+            LocalDate dateArrived = LocalDate.of(2022, 11, 23);
+            Date arrived = Date.valueOf(dateArrived);
+           fullInsertOrder("Pending",arrived);
+           viewOrderTable();
         }
     }
 

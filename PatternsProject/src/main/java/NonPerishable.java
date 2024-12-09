@@ -1,3 +1,5 @@
+import Products.Product;
+
 import java.util.Date;
 
 public class NonPerishable extends Product {

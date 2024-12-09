@@ -1,9 +1,11 @@
+package Products;
+
 public class Product {
 
-    // Product fields
+    // Products.Product fields
     private static String productID = "1";
     private static String name = Product.class.getName();
-    private static String description = "The base of all Products. The \"OG\" Product...";
+    private static String description = "The base of all Products. The \"OG\" Products.Product...";
     private static double unitPrice = 0; // Price per individual
 
     public static String getDescription() {
@@ -29,7 +31,7 @@ public class Product {
 
     @Override
     public String toString() {
-        return "[Product Name: \"" + name + "\", ID: " + productID + ", Price: $" + unitPrice + "]";
+        return "[Products.Product Name: \"" + name + "\", ID: " + productID + ", Price: $" + unitPrice + "]";
     }
 
 }

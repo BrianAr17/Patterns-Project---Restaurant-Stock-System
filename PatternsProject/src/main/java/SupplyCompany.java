@@ -1,6 +1,7 @@
+import Products.Product;
+
 import java.time.LocalDateTime;
 import java.util.ArrayList;
-import java.util.TreeMap;
 
 public class SupplyCompany {
 

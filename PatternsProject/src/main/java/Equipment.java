@@ -1,3 +1,5 @@
+import Products.Product;
+
 public class Equipment extends Product {
 
     // Equipment fields

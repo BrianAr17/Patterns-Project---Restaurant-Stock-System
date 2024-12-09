@@ -1,5 +1,6 @@
+import Products.Product;
+
 import java.util.ArrayList;
-import java.util.TreeMap;
 
 public class Restaurant {
 
@@ -133,7 +134,7 @@ public class Restaurant {
     }
 
     public static String getProductInfo(Product product) {
-        return "Product Info:\n[Product Name: \"" + Product.getName() + "\", ID: " + Product.getProductID() + ", Description: " + Product.getDescription() + ", Price: $" + Product.getUnitPrice() + "]\n";
+        return "Products.Product Info:\n[Products.Product Name: \"" + Product.getName() + "\", ID: " + Product.getProductID() + ", Description: " + Product.getDescription() + ", Price: $" + Product.getUnitPrice() + "]\n";
     }
 
     public static String seeCancelledOrder(String ID) {
