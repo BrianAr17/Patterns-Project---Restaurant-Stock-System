@@ -1,6 +1,9 @@
 package Products;
 
-public class EquipmentClass extends Product {
+/**
+ * EquipmentClass is used to represent all products that are equipments.
+ */
+public abstract class EquipmentClass extends Product {
     private static int warrantyYears;
 
     public static void setWarrantyYears(int warrantyYears) {

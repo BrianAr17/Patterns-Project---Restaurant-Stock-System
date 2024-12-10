@@ -1,25 +1,36 @@
 package Model;
 
-import Products.Product;
 import java.util.ArrayList;
+import java.util.List;
 
 public class Restaurant {
+    private String name;
+    private String address;
+    private String city;
+    private String province;
+    private String zipcode;
+    private String phoneNumber;
+    private String email;
+    public List<Order> ordersSent = new ArrayList<>();
+    public List<Order> cancelledOrders = new ArrayList<>();
+    public List<Delivery> deliveriesReceived = new ArrayList<>();
 
-    // Model.Restaurant fields
+    public Restaurant(String name, String address, String city, String province, String zipCode, String phoneNumber, String email) {
+        this.name = name;
+        this.address = address;
+        this.city = city;
+        this.province = province;
+        this.zipcode = zipCode;
+        this.phoneNumber = phoneNumber;
+        this.email = email;
+    }
 
-    private static String name;
-    private static String address;
-    private static String city;
-    private static String province;
-    private static String zipcode;
-    private static String phoneNumber;
-    private static String email;
-    public static ArrayList<Order> ordersSent = new ArrayList<>();
-    public static ArrayList<Order> cancelledOrders = new ArrayList<>();
-    public static ArrayList<Delivery> deliveriesReceived = new ArrayList<>();
+    public void setOrdersSent(List<Order> ordersSent) {
+        this.ordersSent = ordersSent;
+    }
 
-    private Restaurant(){
-
+    public void setCancelledOrders(List<Order> cancelledOrders) {
+        this.cancelledOrders = cancelledOrders;
     }
 
     public String getName() {

@@ -1,20 +1,12 @@
 package Model;
 
-import Products.Equipment.Skillet;
-import Products.Non_Perishable.Rigatoni;
-import Products.Perishable.Beef;
-import Products.Perishable.Tomato;
-import Products.Product;
-
-import java.sql.Date;
 import java.time.LocalDateTime;
-import java.util.HashMap;
 
 public class Delivery {
 
     // Model.Delivery fields
     private Order order;
-    private String deliveryID;
+    private int deliveryID;
     private String status;
     private LocalDateTime dateShipped;
     private LocalDateTime dateArrived;
@@ -32,11 +24,11 @@ public class Delivery {
         this.order = order;
     }
 
-    public String getDeliveryID() {
+    public int getDeliveryID() {
         return deliveryID;
     }
 
-    public void setDeliveryID(String deliveryID) {
+    public void setDeliveryID(int deliveryID) {
         this.deliveryID = deliveryID;
     }
 
@@ -69,7 +61,7 @@ public class Delivery {
     }
 
 
-    public Delivery(Order order, String deliveryID, String status, SupplyCompany company) {
+    public Delivery(Order order, int deliveryID, String status, SupplyCompany company) {
         this.order = order;
         this.deliveryID = deliveryID;
         this.status = status;

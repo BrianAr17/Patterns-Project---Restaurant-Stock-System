@@ -3,6 +3,7 @@ package Model;
 import Products.Product;
 import org.example.Database;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -11,6 +12,7 @@ import java.util.Map;
 public class SupplyCompany {
 
     // Model.SupplyCompany fields
+    private Restaurant restaurant;
     public ArrayList<Product> productsOffered = new ArrayList<>();
     public ArrayList<Order> ordersReceived = new ArrayList<>();
     public ArrayList<Delivery> deliveries = new ArrayList<>();
@@ -44,18 +46,18 @@ public class SupplyCompany {
     }
 
     public void receiveOrder(Order order) {
-        Restaurant.ordersSent.add(order);
+        restaurant.ordersSent.add(order);
         ordersReceived.add(order);
     }
 
-    public void shipOrder(String deliveryID) {
+    public void shipOrder(int deliveryID) {
         boolean found = false;
         for (int i = 0 ; i < deliveries.size() ; i++) { // works as long as the order ID is equal to the delivery ID
-            if (deliveries.get(i).getDeliveryID().equals(deliveryID)) {
+            if (deliveries.get(i).getDeliveryID() == deliveryID) {
                 Order order = deliveries.get(i).getOrder();
                 deliveries.get(i).setStatus("Shipped");
                 order.setStatus("Shipped");
-                Restaurant.ordersSent.remove(order);
+                restaurant.ordersSent.remove(order);
                 this.ordersReceived.remove(order);
                 found = true;
                 break;
@@ -67,30 +69,29 @@ public class SupplyCompany {
     }
 
     public void cancelOrder(Order order) {
-        Restaurant.ordersSent.remove(order);
+        restaurant.ordersSent.remove(order);
         this.ordersReceived.remove(order);
         order.setStatus("Cancelled");
-        Restaurant.cancelledOrders.add(order);
+        restaurant.cancelledOrders.add(order);
         System.out.println("Attention!\nThe order of ID = " + order.getID() + " was cancelled by " + this.getName() + "\n");
     }
 
-    public void deliverOrder(String deliveryID) {
+    public void deliverOrder(int deliveryID) {
         boolean found = false;
         for (int i = 0 ; i < deliveries.size() ; i++) { // works as long as the order ID is equal to the delivery ID
-            if (deliveries.get(i).getDeliveryID().equals(deliveryID)) {
+            if (deliveries.get(i).getDeliveryID() == deliveryID ) {
                 Order order = deliveries.get(i).getOrder();
-                order.setDateReceived(LocalDateTime.now());
+                order.setDateReceived(LocalDate.now());
                 deliveries.get(i).setStatus("Delivered");
                 deliveries.get(i).setDateArrived(LocalDateTime.now());
                 order.setStatus("Delivered");
-                Restaurant.deliveriesReceived.add(deliveries.get(i));
-                Storage.addProduct(deliveries.get(i));
+                restaurant.deliveriesReceived.add(deliveries.get(i));
 
                 Database.fullInsertOrder(order);
 
                 HashMap<Product, Integer> map = order.getOrder(); // getting the hashmap value
                 for (Map.Entry<Product, Integer> entry : map.entrySet()) {
-                    Database.insertIntoReceiptTable(Integer.parseInt(order.getID()), map.get(entry.getKey()), map.get(entry.getValue()));
+                    Database.insertIntoReceiptTable(order.getID(), map.get(entry.getKey()), map.get(entry.getValue()));
                 }
 
                 deliveries.remove(deliveries.get(i));

@@ -1,43 +1,41 @@
 package Products;
 
 public class Product {
+    private int productID;
+    private String name;
+    private String description;
+    private double unitPrice; // Price per individual unit
 
-    // Products.Product fields
-    private static String productID;
-    private static String name;
-    private static String description;
-    private static double unitPrice; // Price per individual unit
-
-    public static String getDescription() {
+    public String getDescription() {
         return description;
     }
 
-    public static void setDescription(String description) {
-        Product.description = description;
+    public void setDescription(String description) {
+        this.description = description;
     }
 
-    public static double getUnitPrice() {
+    public double getUnitPrice() {
         return unitPrice;
     }
 
-    public static void setUnitPrice(double unitPrice) { Product.unitPrice = unitPrice; }
+    public void setUnitPrice(double unitPrice) {
+        this.unitPrice = unitPrice;
+    }
 
-    public static String getProductID() {
+    public int getProductID() {
         return productID;
     }
 
-    public static String getName() { return name; }
-
-    public static void setProductID(String productID) {
-        Product.productID = productID;
+    public String getName() {
+        return name;
     }
 
-    public static void setName(String name) {
-        Product.name = name;
+    public void setProductID(int productID) {
+        this.productID = productID;
     }
 
-    public Product() {
-
+    public void setName(String name) {
+        this.name = name;
     }
 
     @Override

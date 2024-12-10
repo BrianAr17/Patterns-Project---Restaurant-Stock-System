@@ -3,22 +3,23 @@ package Model;
 import Products.Product;
 
 import java.sql.Date;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.HashMap;
 
 public class Order {
 
     // Model.Order fields
-    private String ID;
+    private int ID;
     private String status;
-    private LocalDateTime dateSent;
-    private LocalDateTime dateReceived;
+    private LocalDate dateSent;
+    private LocalDate dateReceived;
     private HashMap<Product, Integer> order;
 
-    public Order(String ID, HashMap<Product, Integer> order) {
+    public Order(int ID, HashMap<Product, Integer> order) {
         this.ID = ID;
         this.status = "Pending";
-        this.dateSent = LocalDateTime.now();
+        this.dateSent = LocalDate.now();
         this.dateReceived = null;
         this.order = order;
     }
@@ -27,11 +28,11 @@ public class Order {
         return "Order Status: " + status + "\n";
     }
 
-    public String getID() {
+    public int getID() {
         return ID;
     }
 
-    public void setID(String ID) {
+    public void setID(int ID) {
         this.ID = ID;
     }
 
@@ -39,19 +40,19 @@ public class Order {
         this.status = status;
     }
 
-    public LocalDateTime getDateSent() {
+    public LocalDate getDateSent() {
         return dateSent;
     }
 
-    public void setDateSent(LocalDateTime dateSent) {
+    public void setDateSent(LocalDate dateSent) {
         this.dateSent = dateSent;
     }
 
-    public LocalDateTime getDateReceived() {
+    public LocalDate getDateReceived() {
         return dateReceived;
     }
 
-    public void setDateReceived(LocalDateTime dateReceived) {
+    public void setDateReceived(LocalDate dateReceived) {
         this.dateReceived = dateReceived;
     }
 

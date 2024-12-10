@@ -2,10 +2,15 @@ package org.example;
 
 import java.sql.*;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 
 import Model.Order;
+import Products.AbstractProductFactory;
 import Products.Equipment.*;
+import Products.Factory;
 import Products.Non_Perishable.*;
 import Products.Perishable.*;
 import Products.Product;
@@ -83,16 +88,17 @@ public class Database {
 
 //     create Order table =============================================================================
     public static void createOrderTable() {
+
         LocalDate currentDate = LocalDate.now();
         String sql = "create table if not exists 'Order'(\n" // modify columns
                 + " orderId integer primary key, \n"
                 + " status text not null check(status = 'Pending' OR status = 'Cancelled' OR status = 'Approved'), \n"
-                + " dateSent date not null check( dateSent <= '"+currentDate+"'),\n"
+                + " dateSent date not null check( dateSent <= '" + currentDate + "'),\n"
                 + " dateArrived date check (dateArrived >= dateSent)\n"
                 + ");";
 
-        try(Connection conn = connect();
-            Statement stmt = conn.createStatement()) {
+        try (Connection conn = connect();
+             Statement stmt = conn.createStatement()) {
             stmt.execute(sql);
             System.out.println("Order table created successfully");
         } catch (SQLException e) {
@@ -117,21 +123,22 @@ public class Database {
     }
 
 
-public static void fullInsertOrder(Order order) {
-    Date currentDate = Date.valueOf(r); // to fix
-    String sql = "INSERT INTO `Order` (status,dateArrived,dateSent) VALUES (?, ?, ?)";
+    public static void fullInsertOrder(Order order) {
+        LocalDate currentDate = LocalDate.now();
 
-    try (Connection conn = connect();
-         PreparedStatement pstmt = conn.prepareStatement(sql)) {
-        pstmt.setString(1, order.getStatus());
-        pstmt.setDate(2, order.getDateSent());
-        pstmt.setDate(3, order.getDateReceived());
-        pstmt.executeUpdate();
-        System.out.println("Order has been sent and has arrived");
-    } catch (SQLException e) {
-        System.out.println(e.getMessage());
+        String sql = "INSERT INTO `Order` (status,dateArrived,dateSent) VALUES (?, ?, ?)";
+
+        try (Connection conn = connect();
+             PreparedStatement pstmt = conn.prepareStatement(sql)) {
+            pstmt.setString(1, order.getStatus());
+            pstmt.setDate(2, Date.valueOf(order.getDateSent()));
+            pstmt.setDate(3, Date.valueOf(order.getDateReceived()));
+            pstmt.executeUpdate();
+            System.out.println("Order has been sent and has arrived");
+        } catch (SQLException e) {
+            System.out.println(e.getMessage());
+        }
     }
-}
 
     public static void viewOrderTable(){
         String sql = "SELECT * FROM 'Order'";
@@ -149,187 +156,6 @@ public static void fullInsertOrder(Order order) {
             System.out.println("\n\n");
         }
         catch (SQLException e){
-            System.out.println(e.getMessage());
-        }
-    }
-
-    public static void insertIntoRestaurant(){
-        String sql = "select * from Receipts";
-
-        try(Connection conn = connect();
-            Statement stmt = conn.createStatement();
-            ResultSet rs = stmt.executeQuery(sql)) {
-            int lastID = 0;
-            HashMap<Product, Integer> map = new HashMap<>();
-            while(rs.next()) {
-                int orderID = rs.getInt(2);
-                int productID = rs.getInt(3);
-                Product product = new Product();
-                if (productID == 1) {
-                    product = new Apron();
-                }
-                else if (productID == 2) {
-                    product = new Bowl();
-                }
-                else if (productID == 3) {
-                    product = new Cloth();
-                }
-                else if (productID == 4) {
-                    product = new DishWasher();
-                }
-                else if (productID == 5) {
-                    product = new Fork();
-                }
-                else if (productID == 6) {
-                    product = new FryingPan();
-                }
-                else if (productID == 7) {
-                    product = new Grill();
-                }
-                else if (productID == 8) {
-                    product = new HandMixer();
-                }
-                else if (productID == 9) {
-                    product = new HeatLamp();
-                }
-                else if (productID == 10) {
-                    product = new IceMachine();
-                }
-                else if (productID == 11) {
-                    product = new Knife();
-                }
-                else if (productID == 12) {
-                    product = new Microwave();
-                }
-                else if (productID == 13) {
-                    product = new Mixer();
-                }
-                else if (productID == 14) {
-                    product = new Oven();
-                }
-                else if (productID == 15) {
-                    product = new Plate();
-                }
-                else if (productID == 16) {
-                    product = new SaucePan();
-                }
-                else if (productID == 17) {
-                    product = new Skillet();
-                }
-                else if (productID == 18) {
-                    product = new Spoon();
-                }
-                else if (productID == 19) {
-                    product = new WashingMachine();
-                }
-                else if (productID == 20) {
-                    product = new WineOpener();
-                }
-                else if (productID == 21) {
-                    product = new BrownRice();
-                }
-                else if (productID == 22) {
-                    product = new Bucatini();
-                }
-                else if (productID == 23) {
-                    product = new CocaCola();
-                }
-                else if (productID == 24) {
-                    product = new DrPepper();
-                }
-                else if (productID == 25) {
-                    product = new Fanta();
-                }
-                else if (productID == 26) {
-                    product = new Fettuccini();
-                }
-                else if (productID == 27) {
-                    product = new Linguini();
-                }
-                else if (productID == 28) {
-                    product = new OliveOil();
-                }
-                else if (productID == 29) {
-                    product = new Pepsi();
-                }
-                else if (productID == 30) {
-                    product = new Ravioli();
-                }
-                else if (productID == 31) {
-                    product = new Rigatoni();
-                }
-                else if (productID == 32) {
-                    product = new Spaghetti();
-                }
-                else if (productID == 33) {
-                    product = new Sprite();
-                }
-                else if (productID == 34) {
-                    product = new TomatoSauce();
-                }
-                else if (productID == 35) {
-                    product = new WhiteRice();
-                }
-                else if (productID == 36) {
-                    product = new Beef();
-                }
-                else if (productID == 37) {
-                    product = new Bread();
-                }
-                else if (productID == 38) {
-                    product = new Butter();
-                }
-                else if (productID == 39) {
-                    product = new Chicken();
-                }
-                else if (productID == 40) {
-                    product = new Egg();
-                }
-                else if (productID == 41) {
-                    product = new Goat();
-                }
-                else if (productID == 42) {
-                    product = new IcebergLettuce();
-                }
-                else if (productID == 43) {
-                    product = new Lemon();
-                }
-                else if (productID == 44) {
-                    product = new Oregano();
-                }
-                else if (productID == 45) {
-                    product = new Pork();
-                }
-                else if (productID == 46) {
-                    product = new Potato();
-                }
-                else if (productID == 47) {
-                    product = new RomanLettuce();
-                }
-                else if (productID == 48) {
-                    product = new Salmon();
-                }
-                else if (productID == 49) {
-                    product = new Tomato();
-                }
-                else if (productID == 50) {
-                    product = new Tuna();
-                }
-                int quantity = rs.getInt(4);
-                if (orderID == lastID) {
-                    map.put(product, quantity);
-                }
-                else {
-                    Order order = new Order(Integer.toString(orderID), map);
-                    // Kishaan you gotta create the products table first so that I can assign the order values based on id to this order
-                    map.clear();
-                    map.put(product, quantity);
-                }
-                lastID = orderID;
-            }
-        }
-        catch (SQLException e)
-        {
             System.out.println(e.getMessage());
         }
     }
@@ -495,7 +321,8 @@ public static void fullInsertOrder(Order order) {
                 + "productName text not null, \n"
                 + "productDesc text not null,\n"
                 + "pricePerUnit double not null check( pricePerUnit > 0),\n"
-                + "productType text not null check( productType = 'Perishable' OR productType = 'Non-Perishable' OR productType = 'Equip'),"
+                + "productType text not null check( productType = 'Perishable' OR productType = 'Non-Perishable' OR productType = 'Equip')," +
+                " productQuantity integer not null check(productQuantity > 0)"
                 + ");";
         try(Connection conn = connect();
             Statement stmt = conn.createStatement()) {
@@ -506,9 +333,9 @@ public static void fullInsertOrder(Order order) {
         }
     }
 
-    public static void insertIntoProductsTable(String productName,String productDesc,double pricePerUnit,String productType)
+    public static void insertIntoProductsTable(String productName,String productDesc,double pricePerUnit,String productType,int quantity)
     {
-        String sql = "INSERT into Products (productName,productDesc,pricePerUnit,productType,productQuantity) values (?,?,?,?)";
+        String sql = "INSERT into Products (productName,productDesc,pricePerUnit,productType,productQuantity) values (?,?,?,?,?)";
 
         try(Connection conn = connect();
             PreparedStatement pstmt = conn.prepareStatement(sql)){
@@ -516,6 +343,8 @@ public static void fullInsertOrder(Order order) {
             pstmt.setString(2,productDesc);
             pstmt.setDouble(3,pricePerUnit);
             pstmt.setString(4,productType);
+            pstmt.setInt(5,quantity);
+            pstmt.executeUpdate();
             System.out.println("Product has been added has been registered");
         }
         catch(SQLException e){
@@ -524,7 +353,7 @@ public static void fullInsertOrder(Order order) {
     }
 
     public static void viewProductTable(){
-        String sql = "Select * from Products";
+        String sql = "SELECT * FROM Products";
 
         try(Connection conn = connect();
             Statement stmt = conn.createStatement();
@@ -534,7 +363,7 @@ public static void fullInsertOrder(Order order) {
             System.out.printf("%-15s %-20s %-35s %-20s %-20s %-20s" ,"Product Id","Name of Product","Product Desc","Price Per Unit","Product Type","Product Quantity\n");
             while(rs.next()){
                 System.out.printf("%-15s %-20s %-35s %-20s %-20s %-20s",rs.getInt("productId"),rs.getString("productName"),rs.getString("productDesc"),
-                        rs.getDouble("pricePerUnit"),rs.getString("productType"));
+                        rs.getDouble("pricePerUnit"),rs.getString("productType"),rs.getInt("productQuantity"));
                 System.out.println();
             }
             System.out.println("\n\n");
@@ -600,6 +429,91 @@ public static void fullInsertOrder(Order order) {
         }
     }
 
+    public static List<Order> fetchOrdersByStatus(String status) {
+        String sql = """
+                      SELECT * FROM 'Order'
+                      WHERE Status = ?;
+                      """;
+        List<Order> allOrdersSent = new ArrayList<>();
+        try (PreparedStatement pstmt = connect().prepareStatement(sql)) {
+            pstmt.setString(1, status);
+            try (ResultSet rs = pstmt.executeQuery()) {
+                // Loop over all orders sent
+                while (rs.next()) {
+                    int orderId = rs.getInt("orderId");
+                    String orderStatus = rs.getString("status");
+                    LocalDate dateSent = rs.getDate("dateSent").toLocalDate();
+                    LocalDate dateArrived = rs.getDate("dateArrived").toLocalDate();
+                    HashMap<Product, Integer> orderProducts = getOrderProducts(orderId);
+                    Order order = new Order(orderId, orderProducts);
+                    order.setDateSent(dateSent);
+                    order.setDateReceived(dateArrived);
+
+                    // Add to list
+                    allOrdersSent.add(order);
+                }
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return allOrdersSent;
+    }
+
+    public static HashMap<Product, Integer> getOrderProducts(int orderId) {
+        String sql = "SELECT * FROM Receipt WHERE orderID = ?";
+        HashMap<Product,Integer> map = new HashMap<>();
+        try(PreparedStatement pstmt = connect().prepareStatement(sql)) {
+                pstmt.setInt(1,orderId);
+                try (ResultSet rs = pstmt.executeQuery()) {
+                    while (rs.next()){
+                        int productId = rs.getInt("productId");
+                        Product product = getProductById(productId);
+                        int quantity = rs.getInt("quantity");
+                        map.put(product, quantity);
+                    }
+                } catch (SQLException e) {
+                    e.printStackTrace();
+                }
+            }
+        catch (SQLException e){
+            System.out.println(e.getMessage());
+        }
+        return map;
+    }
+
+    public static Product getProductById(int productId) {
+        String sql = """
+                      SELECT * FROM Products
+                      WHERE productId = ?;
+                      """;
+        Product product = null;
+        try (PreparedStatement pstmt = connect().prepareStatement(sql)) {
+            pstmt.setInt(1, productId);
+
+            // Get the product result set
+            try (ResultSet rs = pstmt.executeQuery()) {
+                if (!rs.next()) {
+                    return product;
+                }
+                // Get all the data from the product
+                String productName = rs.getString("productName");
+                String productType = rs.getString("productType");
+
+                // Generate the product using factories
+                AbstractProductFactory abstractFactory = new AbstractProductFactory();
+                Factory specificFactory = abstractFactory.getFactory(productType);
+                product = specificFactory.getProduct(productName);
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return product;
+    }
+
     // Methods ================================================================================
     public static boolean checkForEmployeeValidity(String name, String password){
         String sql = "select 1 " +
@@ -623,28 +537,37 @@ public static void fullInsertOrder(Order order) {
             System.out.println(e.getMessage());
             return false;
         }
-
     }
 
         public static void main(String[] args) {
-//        createEmployeeTable();
-        createOrderTable();
-//        createDeliveryTable();
-//        createDelivererTable();
-//        createProductsTable();
-//        createReceiptTable();
+            createEmployeeTable();
+            createProductsTable();
+            createOrderTable();
+            createDeliveryTable();
+            createDelivererTable();
+            createReceiptTable();
+
+            insertEmployees("Kishaan", "1234", 18, "Admin", "kishaan@gmail.com", "555-555-5555");
+            insertEmployees("Brian", "1234", 19, "Admin", "brian@gmail.com", "555-555-5557");
+            insertEmployees("Andrew", "123456", 19, "Restaurant Owner", "andrew@gmail.com", "555-555-5556");
+            insertEmployees("Danat", "1234567", 19, "Restaurant Owner", "danat@gmail.com", "555-555-5554");
+            insertEmployees("Nigel", "nothing", 69, "CEO", "nigel@gmail.com", "555-555-5559");
 //
-//            insertEmployees("Kishaan", "1234", 18, "Admin", "kishaan@gmail.com", "555-555-5555");
-//            insertEmployees("Brian", "1234", 19, "Admin", "brian@gmail.com", "555-555-5557");
-//            insertEmployees("Andrew", "123456", 19, "Restaurant Owner", "andrew@gmail.com", "555-555-5556");
-//            insertEmployees("Danat", "1234567", 19, "Restaurant Owner", "danat@gmail.com", "555-555-5554");
-//            insertEmployees("Nigel", "nigeria", 69, "CEO", "nigel@gmail.com", "555-555-5559");
+            insertIntoProductsTable("Bread","It's bread",2.50,"Perishable",20);
+            insertIntoProductsTable("Beef","meaty beef",2.50,"Perishable",50);
+            insertIntoProductsTable("Butter","ist butter",2.50,"Perishable",15);
+            insertIntoProductsTable("Brown Rice","its rice but brown",4.50,"Non-Perishable",20);
+            insertIntoProductsTable("Bucatini","like linguini",5.0,"Non-Perishable",40);
+            insertIntoProductsTable("CocaCola","second best to Pepsi",2.99,"Non-Perishable",50);
+            insertIntoProductsTable("Apron","keeps your clothes clean",9.99,"Equip",10);
+            insertIntoProductsTable("Bowl","like a plate but rounder",4.99,"Equip",15);
+            insertIntoProductsTable("Cloth","cleans stuff",1.20,"Equip",30);
 
             viewOrderTable();
-//            viewDeliveryTable();
-//            viewDelivererTable();
-//            viewProductTable();
-//            viewReceiptTable();
-//            displayEmployees();
+            viewDeliveryTable();
+            viewDelivererTable();
+            viewProductTable();
+            viewReceiptTable();
+            displayEmployees();
         }
     }

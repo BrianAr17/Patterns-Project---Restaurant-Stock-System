@@ -9,7 +9,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class Storage {
-
+/*
     // Equipment fields
     private static int apron;
     private static int bowl;
@@ -118,7 +118,6 @@ public class Storage {
     private static final int salmonTHRESHOLD = 50;
     private static final int tomatoTHRESHOLD = 100;
     private static final int tunaTHRESHOLD = 50;
-
 
     public static void addProduct(Delivery delivery) {
         HashMap<Product, Integer> map = delivery.getOrder().getOrder();
@@ -794,4 +793,5 @@ public class Storage {
     public static int getTuna() {
         return tuna;
     }
+    */
 }

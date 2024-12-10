@@ -3,16 +3,13 @@ package Products;
 import java.time.LocalDateTime;
 
 public class PerishableClass extends Product {
-    private static LocalDateTime expirationDate;
+    private LocalDateTime expirationDate;
 
-    public PerishableClass() {
+    public void setExpirationDate(LocalDateTime expirationDate) {
+        this.expirationDate = expirationDate;
     }
 
-    public static void setExpirationDate(LocalDateTime expirationDate) {
-        PerishableClass.expirationDate = expirationDate;
-    }
-
-    public static LocalDateTime getExpirationDate() {
+    public LocalDateTime getExpirationDate() {
         return expirationDate;
     }
 }

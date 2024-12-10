@@ -3,13 +3,13 @@ package Products;
 import java.time.LocalDateTime;
 
 public class NonPerishableClass extends Product {
-    private static LocalDateTime bestBeforeDate;
+    private LocalDateTime bestBeforeDate;
 
-    public static void setBestBeforeDate(LocalDateTime bestBeforeDate) {
-        NonPerishableClass.bestBeforeDate = bestBeforeDate;
+    public void setBestBeforeDate(LocalDateTime bestBeforeDate) {
+        this.bestBeforeDate = bestBeforeDate;
     }
 
-    public static LocalDateTime getBestBeforeDate() {
+    public LocalDateTime getBestBeforeDate() {
         return bestBeforeDate;
     }
 }
