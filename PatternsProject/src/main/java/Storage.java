@@ -120,7 +120,7 @@ public class Storage {
 
 
 
-    public void addProduct(Delivery delivery) {
+    public static void addProduct(Delivery delivery) {
         HashMap<Product, Integer> map = delivery.getOrder().getOrder();
 
         for (Map.Entry<Product, Integer> entry : map.entrySet()) {
@@ -285,7 +285,7 @@ public class Storage {
         validateStock();
     }
 
-    public void validateStock() {
+    public static void validateStock() {
         // Equipment Classes
         if (apron > apronTHRESHOLD) {
             apron = apronTHRESHOLD;
@@ -445,7 +445,7 @@ public class Storage {
         }
     }
 
-    public void consume(Product product) {
+    public static void consume(Product product) {
         // Equipment
         if (product.getClass().equals(Apron.class)) {
             apron--;
@@ -595,4 +595,203 @@ public class Storage {
         }
     }
 
+    public static int getApron() {
+        return apron;
+    }
+
+    public static int getBowl() {
+        return bowl;
+    }
+
+    public static int getCloth() {
+        return cloth;
+    }
+
+    public static int getDishwasher() {
+        return dishwasher;
+    }
+
+    public static int getFork() {
+        return fork;
+    }
+
+    public static int getFryingPan() {
+        return fryingPan;
+    }
+
+    public static int getGrill() {
+        return grill;
+    }
+
+    public static int getHandMixer() {
+        return handMixer;
+    }
+
+    public static int getHeatLamp() {
+        return heatLamp;
+    }
+
+    public static int getIceMachine() {
+        return iceMachine;
+    }
+
+    public static int getKnife() {
+        return knife;
+    }
+
+    public static int getMicrowave() {
+        return microwave;
+    }
+
+    public static int getMixer() {
+        return mixer;
+    }
+
+    public static int getOven() {
+        return oven;
+    }
+
+    public static int getPlate() {
+        return plate;
+    }
+
+    public static int getSaucepan() {
+        return saucepan;
+    }
+
+    public static int getSkillet() {
+        return skillet;
+    }
+
+    public static int getSpoon() {
+        return spoon;
+    }
+
+    public static int getWashingMachine() {
+        return washingMachine;
+    }
+
+    public static int getWineOpener() {
+        return wineOpener;
+    }
+
+    public static int getBrownRice() {
+        return brownRice;
+    }
+
+    public static int getBucatini() {
+        return bucatini;
+    }
+
+    public static int getCocaCola() {
+        return cocaCola;
+    }
+
+    public static int getDrPepper() {
+        return drPepper;
+    }
+
+    public static int getFanta() {
+        return fanta;
+    }
+
+    public static int getFettuccini() {
+        return fettuccini;
+    }
+
+    public static int getLinguini() {
+        return linguini;
+    }
+
+    public static int getOliveOil() {
+        return oliveOil;
+    }
+
+    public static int getPepsi() {
+        return pepsi;
+    }
+
+    public static int getRavioli() {
+        return ravioli;
+    }
+
+    public static int getRigatoni() {
+        return rigatoni;
+    }
+
+    public static int getSpaghetti() {
+        return spaghetti;
+    }
+
+    public static int getSprite() {
+        return sprite;
+    }
+
+    public static int getTomatoSauce() {
+        return tomatoSauce;
+    }
+
+    public static int getWhiteRice() {
+        return whiteRice;
+    }
+
+    public static int getBeef() {
+        return beef;
+    }
+
+    public static int getBread() {
+        return bread;
+    }
+
+    public static int getButter() {
+        return butter;
+    }
+
+    public static int getChicken() {
+        return chicken;
+    }
+
+    public static int getEgg() {
+        return egg;
+    }
+
+    public static int getGoat() {
+        return goat;
+    }
+
+    public static int getIcebergLettuce() {
+        return icebergLettuce;
+    }
+
+    public static int getLemon() {
+        return lemon;
+    }
+
+    public static int getOregano() {
+        return oregano;
+    }
+
+    public static int getPork() {
+        return pork;
+    }
+
+    public static int getPotato() {
+        return potato;
+    }
+
+    public static int getRomanLettuce() {
+        return romanLettuce;
+    }
+
+    public static int getSalmon() {
+        return salmon;
+    }
+
+    public static int getTomato() {
+        return tomato;
+    }
+
+    public static int getTuna() {
+        return tuna;
+    }
 }

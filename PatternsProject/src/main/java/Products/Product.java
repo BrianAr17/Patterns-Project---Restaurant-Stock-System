@@ -3,10 +3,10 @@ package Products;
 public class Product {
 
     // Products.Product fields
-    private static String productID = "1";
-    private static String name = Product.class.getName();
-    private static String description = "The base of all Products. The \"OG\" Products.Product...";
-    private static double unitPrice = 0; // Price per individual
+    private static String productID;
+    private static String name;
+    private static String description;
+    private static double unitPrice; // Price per individual unit
 
     public static String getDescription() {
         return description;
@@ -28,6 +28,17 @@ public class Product {
 
     public static String getName() { return name; }
 
+    public static void setProductID(String productID) {
+        Product.productID = productID;
+    }
+
+    public static void setName(String name) {
+        Product.name = name;
+    }
+
+    public Product() {
+
+    }
 
     @Override
     public String toString() {

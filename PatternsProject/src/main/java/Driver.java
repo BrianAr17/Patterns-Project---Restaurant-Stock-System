@@ -1,3 +1,7 @@
+import Products.Equipment.Skillet;
+import Products.Non_Perishable.Rigatoni;
+import Products.Perishable.Beef;
+import Products.Perishable.Tomato;
 import Products.Product;
 
 import java.util.HashMap;
@@ -9,14 +13,21 @@ public class Driver {
         company1.setName("A Generous Company");
 
         // Creating 4 products
-        Product prod1 = new Product();
+        Tomato tomato = new Tomato();
+        Skillet skillet = new Skillet();
+        Rigatoni rigatoni = new Rigatoni();
+        Beef beef = new Beef();
+
 
         // Adding the products to a products map
-        HashMap<Product, Integer> products = new HashMap<>();
-        products.put(prod1, 100);
+        HashMap<Product, Integer> orderedProducts = new HashMap<>();
+        orderedProducts.put(tomato, 100);
+        orderedProducts.put(skillet, 5);
+        orderedProducts.put(rigatoni, 10);
+        orderedProducts.put(beef, 50);
 
         // Create Order
-        Order order = new Order("1", products);
+        Order order = new Order("1", orderedProducts);
 
         // Send the order to Supply company
         Restaurant.sendOrder(order, company1);
@@ -48,7 +59,7 @@ public class Driver {
         System.out.println(Restaurant.receiveAllOrderInfo());
 
         // Retrieve all the specified product information:
-        System.out.println(Restaurant.getProductInfo(prod1));
+        System.out.println(Restaurant.getProductInfo(tomato));
 
         // See if any orders had been cancelled
         System.out.println(Restaurant.seeAllCancelledOrders());
@@ -86,12 +97,6 @@ public class Driver {
 
         System.out.println();
 
-        Storage storage = new Storage();
-        storage.addProduct(new Delivery(order, "3", "Perfect", company1));
-
-    }
-
-    public static class PlaceholderProduct3 extends Product {
 
     }
 }

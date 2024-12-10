@@ -79,6 +79,7 @@ public class SupplyCompany {
                 deliveries.get(i).setDateArrived(LocalDateTime.now());
                 order.setStatus("Delivered");
                 Restaurant.deliveriesReceived.add(deliveries.get(i));
+                Storage.addProduct(deliveries.get(i));
                 deliveries.remove(deliveries.get(i));
                 found = true;
                 break;
