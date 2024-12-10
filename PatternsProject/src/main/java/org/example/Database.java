@@ -66,8 +66,8 @@ public class Database {
             while (rs.next()) {
                 System.out.println("Id : " + rs.getInt("id") +
                         "\nName: " + rs.getString("name") +
-                        "\nPassword : " + rs.getInt("empPassword")+
-                        "\nAge: " + rs.getString("age") +
+                        "\nPassword : " + rs.getString("empPassword")+
+                        "\nAge: " + rs.getInt("age") +
                         "\nPosition: " + rs.getString("Position") +
                         "\nEmail: " + rs.getString("empEmail") +
                         "\nPhoneNumber: " + rs.getString("empPhoneNumber"));
@@ -84,9 +84,10 @@ public class Database {
         String sql = "create table if not exists 'Order'(\n" // modify columns
                 + " orderId integer primary key, \n"
                 + " status text not null check(status = 'Pending' OR status = 'Declined' OR status = 'Approved'), \n"
-                + " dateSent date not null check( dateSent <= dateArrived AND dateSent >= '"+currentDate+"'),\n"
-                + " dateArrived date not null check (dateArrived >= dateSent)\n"
+                + " dateSent date not null check( dateSent <= '"+currentDate+"'),\n"
+                + " dateArrived date check (dateArrived >= dateSent)\n"
                 + ");";
+
         try(Connection conn = connect();
             Statement stmt = conn.createStatement()) {
             stmt.execute(sql);
@@ -98,13 +99,13 @@ public class Database {
 
     public static void insertIntoOrderTable(String status){
         Date currentDate = Date.valueOf(localeDate);
-
         String sql = "INSERT into 'Order' (status,dateSent) values (?,?)";
 
         try(Connection conn = connect();
             PreparedStatement pstmt = conn.prepareStatement(sql)){
             pstmt.setString(1,status);
             pstmt.setDate(2,currentDate);
+            pstmt.executeUpdate();
             System.out.println("Order has been sent and has arrived");
         }
         catch (SQLException e){
@@ -112,22 +113,23 @@ public class Database {
         }
     }
 
-    public static void fullInsertOrder(String status,Date arrivedDate){
-        Date currentDate = Date.valueOf(localeDate);
 
-        String sql = "INSERT into 'Order' (status,dateSent,dateArrived) values (?,?,?)";
+public static void fullInsertOrder(String status, Date arrivedDate) {
+    Date currentDate = Date.valueOf(localeDate);
 
-        try(Connection conn = connect();
-            PreparedStatement pstmt = conn.prepareStatement(sql)){
-            pstmt.setString(1,status);
-            pstmt.setDate(2,currentDate);
-            pstmt.setDate(3,arrivedDate);
-            System.out.println("Order has been sent and has arrived");
-        }
-        catch (SQLException e){
-            System.out.println(e.getMessage());
-        }
+    String sql = "INSERT INTO `Order` (status,dateArrived,dateSent) VALUES (?, ?, ?)";
+
+    try (Connection conn = connect();
+         PreparedStatement pstmt = conn.prepareStatement(sql)) {
+        pstmt.setString(1, status);
+        pstmt.setDate(2, arrivedDate);
+        pstmt.setDate(3, currentDate);
+        pstmt.executeUpdate();
+        System.out.println("Order has been sent and has arrived");
+    } catch (SQLException e) {
+        System.out.println(e.getMessage());
     }
+}
 
     public static void viewOrderTable(){
         String sql = "SELECT * FROM 'Order'";
@@ -135,11 +137,11 @@ public class Database {
         try(Connection conn = connect();
             Statement stmt = conn.createStatement();
             ResultSet rs = stmt.executeQuery(sql)){
-            System.out.printf("%37s","Order Table");
+            System.out.printf("%52s","Order Table");
             System.out.println();
-            System.out.printf("%-15s %-20s %-20s %-20s"," Order Id","Order Status","Order Sent Date","Order Arrival Date \n");
+            System.out.printf("%-15s %-20s %-20s %-20s","Order Id","Order Status","Order Sent Date","Order Arrival Date \n");
             while(rs.next()){
-                System.out.printf("%-15s %-20s %-20s %-20s",rs.getInt("order_id"),rs.getString("status"),rs.getDate("dateSent"),rs.getDate("dateArrived"));
+                System.out.printf("%-15s %-20s %-20s %-20s",rs.getInt("orderId"),rs.getString("status"),rs.getDate("dateSent"),rs.getDate("dateArrived"));
                 System.out.println();
             }
             System.out.println("\n\n");
@@ -149,18 +151,15 @@ public class Database {
         }
     }
 
-
-
-
-    // create Delivery tools table
+    // create Delivery tools table ====================================================================================
     public static void createDeliveryTable() {
         LocalDate currentDate = LocalDate.now();
         String sql = " create table if not exists Delivery (\n"
                 + " deliveryId integer primary key, \n"
                 + " orderId integer not null, \n"
                 + " status text not null check(status = 'Pending' OR status = 'Preparing_Order' OR status = 'Approved'),\n"
-                + " dateShipped date  not null check(dateShipped <= dateReceived AND dateShipped >= '"+currentDate+"'),\n" //TODO Check if there is a way within SQLite to return the machines date
-                + " dateReceived date not null check(dateReceived >= dateShipped AND dateShipped >=  '"+currentDate+"'),\n"
+                + " dateShipped date not null check(dateShipped >= '"+currentDate+"'),\n"
+                + " dateReceived date check(dateReceived >= dateShipped AND dateShipped >=  '"+currentDate+"'),\n"
                 + " foreign key (orderId) references 'Order' (orderId) on delete set null\n"
                 + ");";
         try(Connection conn = connect();
@@ -171,6 +170,43 @@ public class Database {
             System.out.println(e.getMessage());
         }
     }
+    public static void insertIntoDeliveryTable(int orderId,String status,Date dateShipped,Date dateArrived){
+        String sql = "INSERT into Deliver (orderId,status,dateShipped,dateArrived) values (?,?,?,?)";
+
+        try(Connection conn = connect();
+            PreparedStatement pstmt = conn.prepareStatement(sql)){
+            pstmt.setInt(1,orderId);
+            pstmt.setString(2,status);
+            pstmt.setDate(3,dateShipped);
+            pstmt.setDate(4,dateArrived);
+            pstmt.executeUpdate();
+            System.out.println("Delivery has been sent and has arrived");
+        }
+        catch (SQLException e){
+            System.out.println(e.getMessage());
+        }
+    }
+
+    public static void viewDeliveryTable(){
+        String sql = "SELECT * FROM Delivery";
+        try(Connection conn = connect();
+            Statement stmt = conn.createStatement();
+            ResultSet rs = stmt.executeQuery(sql)){
+            System.out.printf("%55s","Delivery Table");
+            System.out.println();
+            System.out.printf("%-15s %-20s %-20s %-20s %-20s","DeliveryId","OrderId","Status","Delivery Shipped","Delivery Received  \n");
+            while(rs.next()){
+                System.out.printf("%-15s %-20s %-20s %-20s %-20s",rs.getInt("order_id"),rs.getString("status"),rs.getDate("dateSent"),rs.getDate("dateArrived"));
+                System.out.println();
+            }
+            System.out.println("\n\n");
+        }
+        catch (SQLException e){
+            System.out.println(e.getMessage());
+        }
+    }
+
+
 
     // create Deliverer table =============================================================================
     public static void createDelivererTable() {
@@ -186,6 +222,38 @@ public class Database {
             System.out.println(e.getMessage());
         }
     }
+    public static void insertIntoDelivererTable(String name){
+        String sql = "INSERT into Deliverer (name) values (?)";
+
+        try(Connection conn = connect();
+            PreparedStatement pstmt = conn.prepareStatement(sql)){
+            pstmt.setString(1,name);
+            System.out.println("Deliverer has been registered");
+        }
+        catch(SQLException e){
+            System.out.println(e.getMessage());
+        }
+    }
+
+    public static void viewDelivererTable(){
+        String sql = "Select * from Deliverer";
+
+        try(Connection conn = connect();
+            Statement stmt = conn.createStatement();
+            ResultSet rs = stmt.executeQuery(sql)){
+            System.out.printf("%22s","Deliverer Table");
+            System.out.println();
+            System.out.printf("%-15s %-20s" ,"Deliverer Id","Deliverer Name\n");
+            while(rs.next()){
+                System.out.printf("%-10s %-25s",rs.getInt("delivererID"),rs.getString("name"));
+                System.out.println();
+            }
+            System.out.println("\n\n");
+        }
+        catch (SQLException e){
+            System.out.println(e.getMessage());
+        }
+    }
 
     // create Products Records table =============================================================================
     public static void createProductsTable() {
@@ -194,13 +262,51 @@ public class Database {
                 + " productName text not null, \n"
                 + " productDesc text not null,\n"
                 + " pricePerUnit double not null check( pricePerUnit > 0),\n"
-                + " productType text not null check( productType = Persh OR productType = Non-Persh OR productType = Equip)\n" //TODO change the check variable to match the actual types of products
+                + " productType text not null check( productType = 'Perishable' OR productType = 'Non-Perishable' OR productType = 'Equip')\n" //TODO change the check variable to match the actual types of products
                 + ");";
         try(Connection conn = connect();
             Statement stmt = conn.createStatement()) {
             stmt.execute(sql);
             System.out.println(" Products table created successfully");
         } catch (SQLException e) {
+            System.out.println(e.getMessage());
+        }
+    }
+
+    public static void insertIntoProductsTable(String productName,String productDesc,double pricePerUnit,String productType)
+    {
+        String sql = "INSERT into Products (productName,productDesc,pricePerUnit,productType) values (?,?,?,?)";
+
+        try(Connection conn = connect();
+            PreparedStatement pstmt = conn.prepareStatement(sql)){
+            pstmt.setString(1,productName);
+            pstmt.setString(2,productDesc);
+            pstmt.setDouble(3,pricePerUnit);
+            pstmt.setString(4,productType);
+            System.out.println("Product has been added has been registered");
+        }
+        catch(SQLException e){
+            System.out.println(e.getMessage());
+        }
+    }
+
+    public static void viewProductTable(){
+        String sql = "Select * from Products";
+
+        try(Connection conn = connect();
+            Statement stmt = conn.createStatement();
+            ResultSet rs = stmt.executeQuery(sql)){
+            System.out.printf("%60s","Products Table");
+            System.out.println();
+            System.out.printf("%-15s %-20s %-35s %-20s %-20s" ,"Product Id","Name of Product","Product Desc","Price Per Unit","Product Type\n");
+            while(rs.next()){
+                System.out.printf("-15s %-20s %-35s %-20s %-20s",rs.getInt("productId"),rs.getString("productName"),rs.getString("productDesc"),
+                        rs.getDouble("pricePerUnit"),rs.getString("productType"));
+                System.out.println();
+            }
+            System.out.println("\n\n");
+        }
+        catch (SQLException e){
             System.out.println(e.getMessage());
         }
     }
@@ -212,7 +318,7 @@ public class Database {
                 +" orderId integer not null, \n"
                 +" productId integer not null,\n"
                 +" quantity integer not null check( quantity > 0),\n"
-                +" foreign key (orderId) references Order (orderId) on delete set null,\n"
+                +" foreign key (orderId) references 'Order' (orderId) on delete set null,\n"
                 +" foreign key (productId) references Products (productId) on delete set null \n"
                 + ");";
         try(Connection conn = connect();
@@ -220,6 +326,43 @@ public class Database {
             stmt.execute(sql);
             System.out.println(" Receipt table created successfully");
         } catch (SQLException e) {
+            System.out.println(e.getMessage());
+        }
+    }
+
+    public static void insertIntoReceiptTable(int orderId,int productId,int quantity)
+    {
+        String sql = "INSERT into Receipt (orderId,productId,quantity) values (?,?,?)";
+
+        try(Connection conn = connect();
+            PreparedStatement pstmt = conn.prepareStatement(sql)){
+            pstmt.setInt(1,orderId);
+            pstmt.setInt(2,productId);
+            pstmt.setInt(3,quantity);
+            System.out.println("Order Receipt has been Generated");
+        }
+        catch(SQLException e){
+            System.out.println(e.getMessage());
+        }
+    }
+
+    public static void viewReceiptTable(){
+        String sql = "Select * from Receipt";
+
+        try(Connection conn = connect();
+            Statement stmt = conn.createStatement();
+            ResultSet rs = stmt.executeQuery(sql)){
+            System.out.printf("%37s","Receipt Table");
+            System.out.println();
+            System.out.printf("%-15s %-20s %-20s %-20s" ,"Receipt Id","Order Id","Product Id","Quantity\n");
+            while(rs.next()){
+                System.out.printf("-15s %-20s %-20s %-20s ",rs.getInt("receiptId"),rs.getInt("orderId"),rs.getInt("productId"),
+                        rs.getInt("quantity"));
+                System.out.println();
+            }
+            System.out.println("\n\n");
+        }
+        catch (SQLException e){
             System.out.println(e.getMessage());
         }
     }
@@ -253,12 +396,29 @@ public class Database {
     }
 
         public static void main(String[] args) {
-            LocalDate dateArrived = LocalDate.of(2022, 11, 23);
-            Date arrived = Date.valueOf(dateArrived);
-           fullInsertOrder("Pending",arrived);
-           viewOrderTable();
+        createEmployeeTable();
+        createOrderTable();
+        createDeliveryTable();
+        createDelivererTable();
+        createProductsTable();
+        createReceiptTable();
+
+        viewOrderTable();
+        viewDeliveryTable();
+        viewDelivererTable();
+        viewProductTable();
+        viewReceiptTable();
+
         }
     }
+
+
+
+
+
+
+
+
 
 
 
