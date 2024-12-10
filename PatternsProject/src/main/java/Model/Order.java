@@ -1,11 +1,14 @@
+package Model;
+
 import Products.Product;
 
+import java.sql.Date;
 import java.time.LocalDateTime;
 import java.util.HashMap;
 
 public class Order {
 
-    // Order fields
+    // Model.Order fields
     private String ID;
     private String status;
     private LocalDateTime dateSent;
@@ -68,7 +71,6 @@ public class Order {
                 + "\nDate Sent: " + dateSent
                 + "\nProducts and quantities: " + order.toString()
                 + "\n";
-
     }
 
 }

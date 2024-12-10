@@ -1,9 +1,18 @@
+package Model;
+
+import Products.Equipment.Skillet;
+import Products.Non_Perishable.Rigatoni;
+import Products.Perishable.Beef;
+import Products.Perishable.Tomato;
+import Products.Product;
+
+import java.sql.Date;
 import java.time.LocalDateTime;
-import java.util.Date;
+import java.util.HashMap;
 
 public class Delivery {
 
-    // Delivery fields
+    // Model.Delivery fields
     private Order order;
     private String deliveryID;
     private String status;
@@ -59,6 +68,7 @@ public class Delivery {
         this.company = company;
     }
 
+
     public Delivery(Order order, String deliveryID, String status, SupplyCompany company) {
         this.order = order;
         this.deliveryID = deliveryID;
@@ -70,11 +80,11 @@ public class Delivery {
 
     @Override
     public String toString() {
-        return "Delivery ID: " + deliveryID
+        return "Model.Delivery ID: " + deliveryID
                 + "\nStatus: " + status
                 + "\nDate Sent: " + dateShipped
                 + "\nCompany: " + company.getName()
-                + "\nOrder ID: " + order.getID()
+                + "\nModel.Order ID: " + order.getID()
                 + "\n";
     }
 }

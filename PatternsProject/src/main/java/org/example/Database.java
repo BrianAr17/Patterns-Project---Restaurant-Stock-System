@@ -1,21 +1,26 @@
 package org.example;
 
-import javax.xml.crypto.Data;
 import java.sql.*;
 import java.time.LocalDate;
-import java.util.Calendar;
+import java.util.HashMap;
+
+import Model.Order;
+import Products.Equipment.*;
+import Products.Non_Perishable.*;
+import Products.Perishable.*;
+import Products.Product;
 
 public class Database {
 
     public static LocalDate localeDate = LocalDate.now();
 
     private static Connection connect() {
-        String url = "jdbc:sqlite:Restaurant.db";
+        String url = "jdbc:sqlite:RestaurantManagement.db";
         Connection conn = null;
         try {
             conn = DriverManager.getConnection(url);
-            System.out.println(" Connection to Sqlite has been established");
-        }catch (SQLException e) {
+        }
+        catch (SQLException e) {
             System.out.println(e.getMessage());
         }
         return conn;
@@ -42,7 +47,7 @@ public class Database {
     }
 
     public static void insertEmployees(String name, String password,int age,String position, String email,String phoneNumber) {
-        String sql = " insert into Employees (name,empPassword,age,Position,empEmail,empPhoneNumber) values (?, ?,?, ?,?, ?)";
+        String sql = " insert into Employees (name,empPassword,age,Position,empEmail,empPhoneNumber) values (?, ?, ?, ?, ?, ?)";
         try(Connection conn= connect();
             PreparedStatement pstmt = conn.prepareStatement(sql)) {
             pstmt.setString(1, name);
@@ -62,17 +67,15 @@ public class Database {
         String sql = "select * from Employees";
         try (Connection conn = connect(); Statement stmt = conn.createStatement();
              ResultSet rs = stmt.executeQuery(sql)) {
-            System.out.println("Employees :");
+            System.out.printf("\n%90s","Employee Table");
+            System.out.println("\n");
+            System.out.printf("%-20s %-25s %-25s %-22s %-25s %-30s %-20s","Employee ID","Employee Name","Employee Password ","Employee Age","Employee Position","Employee Email","Employee Phone Number\n");
             while (rs.next()) {
-                System.out.println("Id : " + rs.getInt("id") +
-                        "\nName: " + rs.getString("name") +
-                        "\nPassword : " + rs.getString("empPassword")+
-                        "\nAge: " + rs.getInt("age") +
-                        "\nPosition: " + rs.getString("Position") +
-                        "\nEmail: " + rs.getString("empEmail") +
-                        "\nPhoneNumber: " + rs.getString("empPhoneNumber"));
-                System.out.println("\n");
+                System.out.printf("%-20s %-25s %-25s %-22s %-25s %-30s %-20s",rs.getInt("id"),rs.getString("name"),rs.getString("empPassword"),rs.getInt("age"),rs.getString("Position"),
+                                rs.getString("empEmail"),rs.getString("empPhoneNumber"));
+                System.out.println();
             }
+            System.out.println("\n\n");
         } catch (SQLException e) {
             System.out.println(e.getMessage());
         }
@@ -83,7 +86,7 @@ public class Database {
         LocalDate currentDate = LocalDate.now();
         String sql = "create table if not exists 'Order'(\n" // modify columns
                 + " orderId integer primary key, \n"
-                + " status text not null check(status = 'Pending' OR status = 'Declined' OR status = 'Approved'), \n"
+                + " status text not null check(status = 'Pending' OR status = 'Cancelled' OR status = 'Approved'), \n"
                 + " dateSent date not null check( dateSent <= '"+currentDate+"'),\n"
                 + " dateArrived date check (dateArrived >= dateSent)\n"
                 + ");";
@@ -114,16 +117,15 @@ public class Database {
     }
 
 
-public static void fullInsertOrder(String status, Date arrivedDate) {
-    Date currentDate = Date.valueOf(localeDate);
-
+public static void fullInsertOrder(Order order) {
+    Date currentDate = Date.valueOf(r); // to fix
     String sql = "INSERT INTO `Order` (status,dateArrived,dateSent) VALUES (?, ?, ?)";
 
     try (Connection conn = connect();
          PreparedStatement pstmt = conn.prepareStatement(sql)) {
-        pstmt.setString(1, status);
-        pstmt.setDate(2, arrivedDate);
-        pstmt.setDate(3, currentDate);
+        pstmt.setString(1, order.getStatus());
+        pstmt.setDate(2, order.getDateSent());
+        pstmt.setDate(3, order.getDateReceived());
         pstmt.executeUpdate();
         System.out.println("Order has been sent and has arrived");
     } catch (SQLException e) {
@@ -151,27 +153,257 @@ public static void fullInsertOrder(String status, Date arrivedDate) {
         }
     }
 
+    public static void insertIntoRestaurant(){
+        String sql = "select * from Receipts";
+
+        try(Connection conn = connect();
+            Statement stmt = conn.createStatement();
+            ResultSet rs = stmt.executeQuery(sql)) {
+            int lastID = 0;
+            HashMap<Product, Integer> map = new HashMap<>();
+            while(rs.next()) {
+                int orderID = rs.getInt(2);
+                int productID = rs.getInt(3);
+                Product product = new Product();
+                if (productID == 1) {
+                    product = new Apron();
+                }
+                else if (productID == 2) {
+                    product = new Bowl();
+                }
+                else if (productID == 3) {
+                    product = new Cloth();
+                }
+                else if (productID == 4) {
+                    product = new DishWasher();
+                }
+                else if (productID == 5) {
+                    product = new Fork();
+                }
+                else if (productID == 6) {
+                    product = new FryingPan();
+                }
+                else if (productID == 7) {
+                    product = new Grill();
+                }
+                else if (productID == 8) {
+                    product = new HandMixer();
+                }
+                else if (productID == 9) {
+                    product = new HeatLamp();
+                }
+                else if (productID == 10) {
+                    product = new IceMachine();
+                }
+                else if (productID == 11) {
+                    product = new Knife();
+                }
+                else if (productID == 12) {
+                    product = new Microwave();
+                }
+                else if (productID == 13) {
+                    product = new Mixer();
+                }
+                else if (productID == 14) {
+                    product = new Oven();
+                }
+                else if (productID == 15) {
+                    product = new Plate();
+                }
+                else if (productID == 16) {
+                    product = new SaucePan();
+                }
+                else if (productID == 17) {
+                    product = new Skillet();
+                }
+                else if (productID == 18) {
+                    product = new Spoon();
+                }
+                else if (productID == 19) {
+                    product = new WashingMachine();
+                }
+                else if (productID == 20) {
+                    product = new WineOpener();
+                }
+                else if (productID == 21) {
+                    product = new BrownRice();
+                }
+                else if (productID == 22) {
+                    product = new Bucatini();
+                }
+                else if (productID == 23) {
+                    product = new CocaCola();
+                }
+                else if (productID == 24) {
+                    product = new DrPepper();
+                }
+                else if (productID == 25) {
+                    product = new Fanta();
+                }
+                else if (productID == 26) {
+                    product = new Fettuccini();
+                }
+                else if (productID == 27) {
+                    product = new Linguini();
+                }
+                else if (productID == 28) {
+                    product = new OliveOil();
+                }
+                else if (productID == 29) {
+                    product = new Pepsi();
+                }
+                else if (productID == 30) {
+                    product = new Ravioli();
+                }
+                else if (productID == 31) {
+                    product = new Rigatoni();
+                }
+                else if (productID == 32) {
+                    product = new Spaghetti();
+                }
+                else if (productID == 33) {
+                    product = new Sprite();
+                }
+                else if (productID == 34) {
+                    product = new TomatoSauce();
+                }
+                else if (productID == 35) {
+                    product = new WhiteRice();
+                }
+                else if (productID == 36) {
+                    product = new Beef();
+                }
+                else if (productID == 37) {
+                    product = new Bread();
+                }
+                else if (productID == 38) {
+                    product = new Butter();
+                }
+                else if (productID == 39) {
+                    product = new Chicken();
+                }
+                else if (productID == 40) {
+                    product = new Egg();
+                }
+                else if (productID == 41) {
+                    product = new Goat();
+                }
+                else if (productID == 42) {
+                    product = new IcebergLettuce();
+                }
+                else if (productID == 43) {
+                    product = new Lemon();
+                }
+                else if (productID == 44) {
+                    product = new Oregano();
+                }
+                else if (productID == 45) {
+                    product = new Pork();
+                }
+                else if (productID == 46) {
+                    product = new Potato();
+                }
+                else if (productID == 47) {
+                    product = new RomanLettuce();
+                }
+                else if (productID == 48) {
+                    product = new Salmon();
+                }
+                else if (productID == 49) {
+                    product = new Tomato();
+                }
+                else if (productID == 50) {
+                    product = new Tuna();
+                }
+                int quantity = rs.getInt(4);
+                if (orderID == lastID) {
+                    map.put(product, quantity);
+                }
+                else {
+                    Order order = new Order(Integer.toString(orderID), map);
+                    // Kishaan you gotta create the products table first so that I can assign the order values based on id to this order
+                    map.clear();
+                    map.put(product, quantity);
+                }
+                lastID = orderID;
+            }
+        }
+        catch (SQLException e)
+        {
+            System.out.println(e.getMessage());
+        }
+    }
+
+    public static void removeOrder(int orderId, String status) {
+        String verification = "SELECT status FROM 'Order' WHERE orderId = ?";
+        String updateSql = "UPDATE 'Order' SET status = ? WHERE orderId = ?";
+        String deleteSql = "DELETE FROM 'Order' WHERE orderId = ?";
+
+        try (Connection conn = connect();
+             PreparedStatement selectPstmt = conn.prepareStatement(verification);
+             PreparedStatement updatePstmt = conn.prepareStatement(updateSql);
+             PreparedStatement deletePstmt = conn.prepareStatement(deleteSql)) {
+            conn.setAutoCommit(false);
+
+            selectPstmt.setInt(1, orderId);
+            ResultSet rs = selectPstmt.executeQuery();
+
+            if (!rs.next()) {
+                System.out.println("Order Id of " + orderId + " does not exist");
+                conn.commit();  // Commit to complete the transaction
+            } else {
+                String currentStatus = rs.getString("status");
+                if (currentStatus.equals("Cancelled") || currentStatus.equals("Approved")) {
+                    System.out.println("It is too late to cancel your order.");
+                    conn.commit();  // Commit to complete the transaction
+                } else {
+                    // Update the status
+                    updatePstmt.setString(1, status);
+                    updatePstmt.setInt(2, orderId);
+                    updatePstmt.executeUpdate();
+                    System.out.println("Order has been successfully updated to " + status);
+
+                    // Optional: Introduce a delay before deletion
+                    Thread.sleep(5000);
+
+                    // Delete the order
+                    deletePstmt.setInt(1, orderId);
+                    deletePstmt.executeUpdate();
+                    System.out.println("Order has been successfully cancelled and removed.");
+                    conn.commit();  // Commit the transaction
+                }
+            }
+        } catch (SQLException e) {
+            System.out.println(e.getMessage());
+        } catch (InterruptedException ie) {
+            System.out.println(ie.getMessage());
+        }
+    }
+
+
+
     // create Delivery tools table ====================================================================================
     public static void createDeliveryTable() {
         LocalDate currentDate = LocalDate.now();
         String sql = " create table if not exists Delivery (\n"
-                + " deliveryId integer primary key, \n"
-                + " orderId integer not null, \n"
-                + " status text not null check(status = 'Pending' OR status = 'Preparing_Order' OR status = 'Approved'),\n"
-                + " dateShipped date not null check(dateShipped >= '"+currentDate+"'),\n"
-                + " dateReceived date check(dateReceived >= dateShipped AND dateShipped >=  '"+currentDate+"'),\n"
+                + "deliveryId integer primary key, \n"
+                + "orderId integer not null, \n"
+                + "status text not null check(status = 'Cancelled' OR status = 'Lost' OR status = 'Delivered'),\n"
+                + "dateShipped date not null check(dateShipped >= '"+currentDate+"'),\n"
+                + "dateReceived date check(dateReceived >= dateShipped AND dateShipped >=  '"+currentDate+"'), \n"
+                +"deliveryCompany text not null,\n"
                 + " foreign key (orderId) references 'Order' (orderId) on delete set null\n"
                 + ");";
         try(Connection conn = connect();
             Statement stmt = conn.createStatement()) {
             stmt.execute(sql);
-            System.out.println(" Delivery table created successfully");
+            System.out.println("Delivery table created successfully");
         } catch (SQLException e) {
             System.out.println(e.getMessage());
         }
     }
-    public static void insertIntoDeliveryTable(int orderId,String status,Date dateShipped,Date dateArrived){
-        String sql = "INSERT into Deliver (orderId,status,dateShipped,dateArrived) values (?,?,?,?)";
+    public static void insertIntoDeliveryTable(int orderId,String status,Date dateShipped,Date dateArrived,String company){
+        String sql = "INSERT into Delivery (orderId,status,dateShipped,dateArrived,deliveryCompany) values (?,?,?,?,?)";
 
         try(Connection conn = connect();
             PreparedStatement pstmt = conn.prepareStatement(sql)){
@@ -179,6 +411,7 @@ public static void fullInsertOrder(String status, Date arrivedDate) {
             pstmt.setString(2,status);
             pstmt.setDate(3,dateShipped);
             pstmt.setDate(4,dateArrived);
+            pstmt.setString(5,company);
             pstmt.executeUpdate();
             System.out.println("Delivery has been sent and has arrived");
         }
@@ -194,9 +427,9 @@ public static void fullInsertOrder(String status, Date arrivedDate) {
             ResultSet rs = stmt.executeQuery(sql)){
             System.out.printf("%55s","Delivery Table");
             System.out.println();
-            System.out.printf("%-15s %-20s %-20s %-20s %-20s","DeliveryId","OrderId","Status","Delivery Shipped","Delivery Received  \n");
+            System.out.printf("%-15s %-20s %-20s %-20s %-20s %-30s","DeliveryId","OrderId","Status","Delivery Shipped","Delivery Received","Delivery Company  \n");
             while(rs.next()){
-                System.out.printf("%-15s %-20s %-20s %-20s %-20s",rs.getInt("order_id"),rs.getString("status"),rs.getDate("dateSent"),rs.getDate("dateArrived"));
+                System.out.printf("%-15s %-20s %-20s %-20s %-20s %-30s",rs.getInt("deliveryId"),rs.getInt("order_id"),rs.getString("status"),rs.getDate("dateSent"),rs.getDate("dateArrived"),rs.getString("deliveryCompany"));
                 System.out.println();
             }
             System.out.println("\n\n");
@@ -257,12 +490,12 @@ public static void fullInsertOrder(String status, Date arrivedDate) {
 
     // create Products Records table =============================================================================
     public static void createProductsTable() {
-        String sql = " create table if not exists Products (\n"
-                + " productId integer primary key, \n"
-                + " productName text not null, \n"
-                + " productDesc text not null,\n"
-                + " pricePerUnit double not null check( pricePerUnit > 0),\n"
-                + " productType text not null check( productType = 'Perishable' OR productType = 'Non-Perishable' OR productType = 'Equip')\n" //TODO change the check variable to match the actual types of products
+        String sql = "create table if not exists Products (\n"
+                + "productId integer primary key, \n"
+                + "productName text not null, \n"
+                + "productDesc text not null,\n"
+                + "pricePerUnit double not null check( pricePerUnit > 0),\n"
+                + "productType text not null check( productType = 'Perishable' OR productType = 'Non-Perishable' OR productType = 'Equip'),"
                 + ");";
         try(Connection conn = connect();
             Statement stmt = conn.createStatement()) {
@@ -275,7 +508,7 @@ public static void fullInsertOrder(String status, Date arrivedDate) {
 
     public static void insertIntoProductsTable(String productName,String productDesc,double pricePerUnit,String productType)
     {
-        String sql = "INSERT into Products (productName,productDesc,pricePerUnit,productType) values (?,?,?,?)";
+        String sql = "INSERT into Products (productName,productDesc,pricePerUnit,productType,productQuantity) values (?,?,?,?)";
 
         try(Connection conn = connect();
             PreparedStatement pstmt = conn.prepareStatement(sql)){
@@ -298,9 +531,9 @@ public static void fullInsertOrder(String status, Date arrivedDate) {
             ResultSet rs = stmt.executeQuery(sql)){
             System.out.printf("%60s","Products Table");
             System.out.println();
-            System.out.printf("%-15s %-20s %-35s %-20s %-20s" ,"Product Id","Name of Product","Product Desc","Price Per Unit","Product Type\n");
+            System.out.printf("%-15s %-20s %-35s %-20s %-20s %-20s" ,"Product Id","Name of Product","Product Desc","Price Per Unit","Product Type","Product Quantity\n");
             while(rs.next()){
-                System.out.printf("-15s %-20s %-35s %-20s %-20s",rs.getInt("productId"),rs.getString("productName"),rs.getString("productDesc"),
+                System.out.printf("%-15s %-20s %-35s %-20s %-20s %-20s",rs.getInt("productId"),rs.getString("productName"),rs.getString("productDesc"),
                         rs.getDouble("pricePerUnit"),rs.getString("productType"));
                 System.out.println();
             }
@@ -330,7 +563,7 @@ public static void fullInsertOrder(String status, Date arrivedDate) {
         }
     }
 
-    public static void insertIntoReceiptTable(int orderId,int productId,int quantity)
+    public static void insertIntoReceiptTable(int orderId, int productId, int quantity)
     {
         String sql = "INSERT into Receipt (orderId,productId,quantity) values (?,?,?)";
 
@@ -371,16 +604,14 @@ public static void fullInsertOrder(String status, Date arrivedDate) {
     public static boolean checkForEmployeeValidity(String name, String password){
         String sql = "select 1 " +
                 "from Employees " +
-                "where name LIKE ? ANd empPassword LIKE ?";
+                "where name LIKE ? AND empPassword LIKE ?";
         try (Connection conn = connect();
              PreparedStatement pstmt = conn.prepareStatement(sql))
-
         {
             pstmt.setString(1,name);
             pstmt.setString(2,password);
             ResultSet rs = pstmt.executeQuery();
-            if(rs.next()){
-                System.out.println("Input valid");
+            if(rs.next()) {
                 return true;
             }
             else{
@@ -396,34 +627,24 @@ public static void fullInsertOrder(String status, Date arrivedDate) {
     }
 
         public static void main(String[] args) {
-        createEmployeeTable();
+//        createEmployeeTable();
         createOrderTable();
-        createDeliveryTable();
-        createDelivererTable();
-        createProductsTable();
-        createReceiptTable();
+//        createDeliveryTable();
+//        createDelivererTable();
+//        createProductsTable();
+//        createReceiptTable();
+//
+//            insertEmployees("Kishaan", "1234", 18, "Admin", "kishaan@gmail.com", "555-555-5555");
+//            insertEmployees("Brian", "1234", 19, "Admin", "brian@gmail.com", "555-555-5557");
+//            insertEmployees("Andrew", "123456", 19, "Restaurant Owner", "andrew@gmail.com", "555-555-5556");
+//            insertEmployees("Danat", "1234567", 19, "Restaurant Owner", "danat@gmail.com", "555-555-5554");
+//            insertEmployees("Nigel", "nigeria", 69, "CEO", "nigel@gmail.com", "555-555-5559");
 
-        viewOrderTable();
-        viewDeliveryTable();
-        viewDelivererTable();
-        viewProductTable();
-        viewReceiptTable();
-
+            viewOrderTable();
+//            viewDeliveryTable();
+//            viewDelivererTable();
+//            viewProductTable();
+//            viewReceiptTable();
+//            displayEmployees();
         }
     }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-

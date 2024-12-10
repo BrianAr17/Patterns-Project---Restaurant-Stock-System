@@ -1,6 +1,8 @@
-public class  Deliverer {
+package Model;
 
-    // Deliverer fields
+public class Deliverer {
+
+    // Model.Deliverer fields
     private String name;
     private String ID;
 

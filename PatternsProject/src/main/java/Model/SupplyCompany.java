@@ -1,14 +1,19 @@
+package Model;
+
 import Products.Product;
+import org.example.Database;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
 
 public class SupplyCompany {
 
-    // SupplyCompany fields
-    protected ArrayList<Product> productsOffered = new ArrayList<>();
-    protected ArrayList<Order> ordersReceived = new ArrayList<>();
-    protected ArrayList<Delivery> deliveries = new ArrayList<>();
+    // Model.SupplyCompany fields
+    public ArrayList<Product> productsOffered = new ArrayList<>();
+    public ArrayList<Order> ordersReceived = new ArrayList<>();
+    public ArrayList<Delivery> deliveries = new ArrayList<>();
     private String name;
 
     public ArrayList<Product> getProductsOffered() {
@@ -66,7 +71,7 @@ public class SupplyCompany {
         this.ordersReceived.remove(order);
         order.setStatus("Cancelled");
         Restaurant.cancelledOrders.add(order);
-        System.out.println("Attention!\nThe order of ID = " + order.getID() + " was refused by " + this.getName() + "\n");
+        System.out.println("Attention!\nThe order of ID = " + order.getID() + " was cancelled by " + this.getName() + "\n");
     }
 
     public void deliverOrder(String deliveryID) {
@@ -80,6 +85,14 @@ public class SupplyCompany {
                 order.setStatus("Delivered");
                 Restaurant.deliveriesReceived.add(deliveries.get(i));
                 Storage.addProduct(deliveries.get(i));
+
+                Database.fullInsertOrder(order);
+
+                HashMap<Product, Integer> map = order.getOrder(); // getting the hashmap value
+                for (Map.Entry<Product, Integer> entry : map.entrySet()) {
+                    Database.insertIntoReceiptTable(Integer.parseInt(order.getID()), map.get(entry.getKey()), map.get(entry.getValue()));
+                }
+
                 deliveries.remove(deliveries.get(i));
                 found = true;
                 break;

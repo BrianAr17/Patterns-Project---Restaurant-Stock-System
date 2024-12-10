@@ -1,76 +1,32 @@
+package Controller;
+
+import Model.Delivery;
+import Model.Order;
+import Model.Restaurant;
+import Model.SupplyCompany;
 import Products.Product;
 
-import java.util.ArrayList;
+public class RestaurantController {
 
-public class Restaurant {
+    private static RestaurantController instance = null;
 
-    // Restaurant fields
-    private static String name;
-    private static String address;
-    private static String city;
-    private static String province;
-    private static String zipcode;
-    private static String phoneNumber;
-    private static String email;
-    protected static ArrayList<Order> ordersSent = new ArrayList<>();
-    protected static ArrayList<Order> cancelledOrders = new ArrayList<>();
-    protected static ArrayList<Delivery> deliveriesReceived = new ArrayList<>();
+    private RestaurantController() {
 
-    public String getName() {
-        return name;
     }
 
-    public void setName(String name) {
-        this.name = name;
+    public static RestaurantController Instance(){
+        if (instance == null){
+            return new RestaurantController();
+        }
+        else{
+            return instance;
+        }
     }
 
-    public String getAddress() {
-        return address;
+    public static void createOrder() {
+
     }
 
-    public void setAddress(String address) {
-        this.address = address;
-    }
-
-    public String getCity() {
-        return city;
-    }
-
-    public void setCity(String city) {
-        this.city = city;
-    }
-
-    public String getProvince() {
-        return province;
-    }
-
-    public void setProvince(String province) {
-        this.province = province;
-    }
-
-    public String getZipcode() {
-        return zipcode;
-    }
-
-    public void setZipcode(String zipcode) {
-        this.zipcode = zipcode;
-    }
-
-    public String getPhoneNumber() {
-        return phoneNumber;
-    }
-
-    public void setPhoneNumber(String phoneNumber) {
-        this.phoneNumber = phoneNumber;
-    }
-
-    public String getEmail() {
-        return email;
-    }
-
-    public void setEmail(String email) {
-        this.email = email;
-    }
 
     // Sends order to the company
     public static void sendOrder(Order order, SupplyCompany company) {
@@ -84,9 +40,9 @@ public class Restaurant {
     }
 
     public static String receiveOrderInfo(String ID) {
-        for (int i = 0 ; i < ordersSent.size() ; i++) {
-            if (ordersSent.get(i).getID().equals(ID)) {
-                return ordersSent.get(i).toString();
+        for (int i = 0 ; i < Restaurant.ordersSent.size() ; i++) {
+            if (Restaurant.ordersSent.get(i).getID().equals(ID)) {
+                return Restaurant.ordersSent.get(i).toString();
             }
         }
         return "No order information available at the moment for the specified order (Order ID = " + ID + ")\n";
@@ -95,8 +51,8 @@ public class Restaurant {
     // receive the info of all orders
     public static String receiveAllOrderInfo() {
         String orderInfo = "";
-        for (int i = 0 ; i < ordersSent.size() ; i++) {
-            orderInfo += ordersSent.get(i).toString() + "\n";
+        for (int i = 0 ; i < Restaurant.ordersSent.size() ; i++) {
+            orderInfo += Restaurant.ordersSent.get(i).toString() + "\n";
         }
         if (orderInfo.isEmpty()) {
             return "There are no active orders at the moment\n";
@@ -123,7 +79,7 @@ public class Restaurant {
     public static String receiveAllDeliveryInfo(SupplyCompany company) {
         String deliveryInfo = "";
         for (int i = 0 ; i < company.deliveries.size() ; i++) {
-                deliveryInfo += company.deliveries.get(i).toString();
+            deliveryInfo += company.deliveries.get(i).toString();
         }
         if (deliveryInfo.isEmpty()) {
             return "There are no active deliveries at the moment\n";
@@ -134,13 +90,13 @@ public class Restaurant {
     }
 
     public static String getProductInfo(Product product) {
-        return "Products.Product Info:\n[Products.Product Name: \"" + Product.getName() + "\", ID: " + Product.getProductID() + ", Description: " + Product.getDescription() + ", Price: $" + Product.getUnitPrice() + "]\n";
+        return "Product Info:\n[Product Name: \"" + Product.getName() + "\", ID: " + Product.getProductID() + ", Description: " + Product.getDescription() + ", Price: $" + Product.getUnitPrice() + "]\n";
     }
 
     public static String seeCancelledOrder(String ID) {
-        for (int i = 0 ; i < cancelledOrders.size() ; i++) {
-            if (cancelledOrders.get(i).getID().equals(ID)) {
-                return cancelledOrders.get(i).toString();
+        for (int i = 0 ; i < Restaurant.cancelledOrders.size() ; i++) {
+            if (Restaurant.cancelledOrders.get(i).getID().equals(ID)) {
+                return Restaurant.cancelledOrders.get(i).toString();
             }
         }
         return "No order information available at the moment for the specified order (Order ID = "  + ID + ")\n";
@@ -148,8 +104,8 @@ public class Restaurant {
 
     public static String seeAllCancelledOrders() {
         String orderInfo = "";
-        for (int i = 0 ; i < cancelledOrders.size() ; i++) {
-            orderInfo += cancelledOrders.get(i).toString() + "\n";
+        for (int i = 0 ; i < Restaurant.cancelledOrders.size() ; i++) {
+            orderInfo += Restaurant.cancelledOrders.get(i).toString() + "\n";
         }
         if (orderInfo.isEmpty())
         {
@@ -161,9 +117,9 @@ public class Restaurant {
     }
 
     public static String seeDeliveryReceived(String ID) {
-        for (int i = 0 ; i < deliveriesReceived.size() ; i++) {
-            if (deliveriesReceived.get(i).getDeliveryID().equals(ID)) {
-                return deliveriesReceived.get(i).toString();
+        for (int i = 0 ; i < Restaurant.deliveriesReceived.size() ; i++) {
+            if (Restaurant.deliveriesReceived.get(i).getDeliveryID().equals(ID)) {
+                return Restaurant.deliveriesReceived.get(i).toString();
             }
         }
         return "No delivery information available at the moment for the specified delivery (Delivery ID = "  + ID + ")\n";
@@ -171,8 +127,8 @@ public class Restaurant {
 
     public static String seeAllDeliveriesReceived() {
         String orderInfo = "";
-        for (int i = 0 ; i < deliveriesReceived.size() ; i++) {
-            orderInfo += deliveriesReceived.get(i).toString() + "\n";
+        for (int i = 0 ; i < Restaurant.deliveriesReceived.size() ; i++) {
+            orderInfo += Restaurant.deliveriesReceived.get(i).toString() + "\n";
         }
         if (orderInfo.isEmpty())
         {
@@ -183,4 +139,7 @@ public class Restaurant {
         }
     }
 
+    public static void removeOrder(Order order, SupplyCompany company) {
+        company.cancelOrder(order);
+    }
 }
